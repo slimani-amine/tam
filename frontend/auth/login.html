@@ -1,90 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style2.css" />
     <script defer src="./login.js" type="module"></script>
-    <title>Searchy</title>
-</head>
+    <title>Login</title>
+  </head>
 
-<body>
-    <form class="form_main">
-        <p class="heading">Login</p>
+  <body>
+    <div class="container">
+      <form class="form_main">
+        <p class="heading">Welcome</p>
         <div class="inputContainer">
-            <label class="labels">
-                E-mail
-                <div>
-                    <svg class="inputIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
-                        fill="none">
-                        <rect x="2.75" y="5.5" width="16.5" height="12.8333" rx="2" stroke="#9747FF" />
-                        <path
-                            d="M2.75 9.16666L10.1877 12.4723C10.7049 12.7022 11.2951 12.7022 11.8123 12.4723L19.25 9.16666"
-                            stroke="#9747FF" />
-                    </svg>
-                    <input placeholder="Enter your e-mail " id="Email" class="inputField" type="Email">
-                </div>
-            </label>
+          <label class="labels">
+            E-mail
+            <div>
+              <svg
+                class="inputIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+              >
+                <rect
+                  x="2.75"
+                  y="5.5"
+                  width="16.5"
+                  height="12.8333"
+                  rx="2"
+                  stroke="#9747FF"
+                />
+                <path
+                  d="M2.75 9.16666L10.1877 12.4723C10.7049 12.7022 11.2951 12.7022 11.8123 12.4723L19.25 9.16666"
+                  stroke="#9747FF"
+                />
+              </svg>
+              <input
+                placeholder="Enter your e-mail "
+                id="Email"
+                class="inputField"
+                type="Email"
+              />
+            </div>
+          </label>
         </div>
 
         <div class="inputContainer">
-            <label class="labels">
-                Password
-                <div>
-                    <svg class="inputIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
-                        fill="none">
-                        <path
-                            d="M0.666504 10.25C0.666504 8.36438 0.666504 7.42157 1.25229 6.83579C1.83808 6.25 2.78089 6.25 4.6665 6.25H11.3332C13.2188 6.25 14.1616 6.25 14.7474 6.83579C15.3332 7.42157 15.3332 8.36438 15.3332 10.25V11.25C15.3332 14.0784 15.3332 15.4926 14.4545 16.3713C13.5758 17.25 12.1616 17.25 9.33317 17.25H6.66651C3.83808 17.25 2.42386 17.25 1.54518 16.3713C0.666504 15.4926 0.666504 14.0784 0.666504 11.25V10.25Z"
-                            stroke="#9747FF" />
-                        <path
-                            d="M11.6663 5.33333V4.41667C11.6663 2.39162 10.0247 0.75 7.99967 0.75V0.75C5.97463 0.75 4.33301 2.39162 4.33301 4.41667V5.33333"
-                            stroke="#9747FF" stroke-linecap="round" />
-                        <circle cx="7.99984" cy="11.75" r="1.83333" fill="#9747FF" />
-                    </svg>
-                    <input placeholder="Minimum 8 characters" id="password" class="inputField" type="password">
-                </div>
-            </label>
+          <label class="labels">
+            Password
+            <div>
+              <svg
+                class="inputIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+              >
+                <path
+                  d="M0.666504 10.25C0.666504 8.36438 0.666504 7.42157 1.25229 6.83579C1.83808 6.25 2.78089 6.25 4.6665 6.25H11.3332C13.2188 6.25 14.1616 6.25 14.7474 6.83579C15.3332 7.42157 15.3332 8.36438 15.3332 10.25V11.25C15.3332 14.0784 15.3332 15.4926 14.4545 16.3713C13.5758 17.25 12.1616 17.25 9.33317 17.25H6.66651C3.83808 17.25 2.42386 17.25 1.54518 16.3713C0.666504 15.4926 0.666504 14.0784 0.666504 11.25V10.25Z"
+                  stroke="#9747FF"
+                />
+                <path
+                  d="M11.6663 5.33333V4.41667C11.6663 2.39162 10.0247 0.75 7.99967 0.75V0.75C5.97463 0.75 4.33301 2.39162 4.33301 4.41667V5.33333"
+                  stroke="#9747FF"
+                  stroke-linecap="round"
+                />
+                <circle cx="7.99984" cy="11.75" r="1.83333" fill="#9747FF" />
+              </svg>
+              <input
+                placeholder="Minimum 8 characters"
+                id="password"
+                class="inputField"
+                type="password"
+              />
+            </div>
+          </label>
+          <div class="remember">
+            <div class="connected">
+              <input class="checkbox" type="checkbox" />
+              <p>Stay connected</p>
+            </div>
+            <a href="#">Forget password</a>
+          </div>
         </div>
-
 
         <button id="login-button">Get Started</button>
         <div class="signupContainer">
-            <p>Already have an account ? </p><a href="login.html"> Login</a>
+          <p>You don't have an account ?</p>
+          <a href="signUp.html">&nbsp; Sign Up</a>
         </div>
-        <div>
-            <p> or </p>
+        <div class="or">
+          <div class="line"></div>
+          <p>or</p>
+          <div class="line"></div>
         </div>
         <div class="google">
-            <svg class="googleIcon" xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24"
-                fill="none">
-                <g clip-path="url(#clip0_181_3136)">
-                    <path
-                        d="M24.2663 12.2765C24.2663 11.4608 24.2001 10.6406 24.059 9.83813H12.7402V14.4591H19.222C18.953 15.9495 18.0888 17.2679 16.8233 18.1056V21.104H20.6903C22.9611 19.014 24.2663 15.9274 24.2663 12.2765Z"
-                        fill="#4285F4" />
-                    <path
-                        d="M12.7401 24.0008C15.9766 24.0008 18.7059 22.9382 20.6945 21.1039L16.8276 18.1055C15.7517 18.8375 14.3627 19.252 12.7445 19.252C9.61388 19.252 6.95946 17.1399 6.00705 14.3003H2.0166V17.3912C4.05371 21.4434 8.2029 24.0008 12.7401 24.0008Z"
-                        fill="#34A853" />
-                    <path
-                        d="M6.00277 14.3002C5.50011 12.8099 5.50011 11.196 6.00277 9.70569V6.61475H2.01674C0.314734 10.0055 0.314734 14.0004 2.01674 17.3912L6.00277 14.3002Z"
-                        fill="#FBBC04" />
-                    <path
-                        d="M12.7401 4.74966C14.4509 4.7232 16.1044 5.36697 17.3434 6.54867L20.7695 3.12262C18.6001 1.0855 15.7208 -0.034466 12.7401 0.000808666C8.2029 0.000808666 4.05371 2.55822 2.0166 6.61481L6.00264 9.70575C6.95064 6.86173 9.60947 4.74966 12.7401 4.74966Z"
-                        fill="#EA4335" />
-                </g>
-                <defs>
-                    <clipPath id="clip0_181_3136">
-                        <rect width="24" height="24" fill="white" transform="translate(0.5)" />
-                    </clipPath>
-                </defs>
-            </svg>
-            <button id="google-button">Continue with Google</button>
+          <svg
+            class="googleIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="24"
+            viewBox="0 0 25 24"
+            fill="none"
+          >
+            <g clip-path="url(#clip0_181_3136)">
+              <path
+                d="M24.2663 12.2765C24.2663 11.4608 24.2001 10.6406 24.059 9.83813H12.7402V14.4591H19.222C18.953 15.9495 18.0888 17.2679 16.8233 18.1056V21.104H20.6903C22.9611 19.014 24.2663 15.9274 24.2663 12.2765Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M12.7401 24.0008C15.9766 24.0008 18.7059 22.9382 20.6945 21.1039L16.8276 18.1055C15.7517 18.8375 14.3627 19.252 12.7445 19.252C9.61388 19.252 6.95946 17.1399 6.00705 14.3003H2.0166V17.3912C4.05371 21.4434 8.2029 24.0008 12.7401 24.0008Z"
+                fill="#34A853"
+              />
+              <path
+                d="M6.00277 14.3002C5.50011 12.8099 5.50011 11.196 6.00277 9.70569V6.61475H2.01674C0.314734 10.0055 0.314734 14.0004 2.01674 17.3912L6.00277 14.3002Z"
+                fill="#FBBC04"
+              />
+              <path
+                d="M12.7401 4.74966C14.4509 4.7232 16.1044 5.36697 17.3434 6.54867L20.7695 3.12262C18.6001 1.0855 15.7208 -0.034466 12.7401 0.000808666C8.2029 0.000808666 4.05371 2.55822 2.0166 6.61481L6.00264 9.70575C6.95064 6.86173 9.60947 4.74966 12.7401 4.74966Z"
+                fill="#EA4335"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_181_3136">
+                <rect
+                  width="24"
+                  height="24"
+                  fill="white"
+                  transform="translate(0.5)"
+                />
+              </clipPath>
+            </defs>
+          </svg>
+          <button id="google-button">Continue with Google</button>
         </div>
-
-    </form>
-    <div class="right-side">
+      </form>
+      <div class="right-side">
+        <div class="rect1"></div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="206"
+          height="212"
+          viewBox="0 0 206 212"
+          fill="none"
+          class="right-icon"
+        >
+          <g filter="url(#filter0_d_181_3138)">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M61.6758 19.1128H145C160.464 19.1128 173 31.6488 173 47.1128V137C173 152.464 160.464 165 145 165H61.6758C46.2118 165 33.6758 152.464 33.6758 137V109.66H86.5414V120.355C86.5414 122.665 89.0414 124.108 91.0414 122.953L139.623 94.9047C141.623 93.75 141.623 90.8632 139.623 89.7085L91.0414 61.66C89.0414 60.5053 86.5414 61.9487 86.5414 64.2581V77.0565H33.6758V47.1128C33.6758 31.6488 46.2118 19.1128 61.6758 19.1128ZM15.6758 47.1128C15.6758 21.7077 36.2707 1.11279 61.6758 1.11279H145C170.405 1.11279 191 21.7077 191 47.1128V137C191 162.405 170.405 183 145 183H61.6758C36.2707 183 15.6758 162.405 15.6758 137V47.1128Z"
+              fill="url(#paint0_linear_181_3138)"
+            />
+          </g>
+          <defs>
+            <filter
+              id="filter0_d_181_3138"
+              x="0.675781"
+              y="0.112793"
+              width="205.324"
+              height="211.887"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dy="14" />
+              <feGaussianBlur stdDeviation="7.5" />
+              <feComposite in2="hardAlpha" operator="out" />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 0.809462 0 0 0 0 0.668403 0 0 0 0 0.916667 0 0 0 0.44 0"
+              />
+              <feBlend
+                mode="normal"
+                in2="BackgroundImageFix"
+                result="effect1_dropShadow_181_3138"
+              />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="effect1_dropShadow_181_3138"
+                result="shape"
+              />
+            </filter>
+            <linearGradient
+              id="paint0_linear_181_3138"
+              x1="103.338"
+              y1="1.11279"
+              x2="104.289"
+              y2="223.922"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="white" />
+              <stop offset="1" stop-color="#FEE6FF" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>
