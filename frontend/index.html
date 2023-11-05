@@ -1,16 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Searchy</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tam</title>
     <link rel="stylesheet" href="./style.css" />
     <script defer src="./script.js" type="module"></script>
-</head>
+  </head>
 
-<body>
-    
-</body>
+  <body>
+    <div id="sidebar">
+        <h2>Sidebar</h2>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Projects</a></li>
+            <li><a href="#">Tasks</a></li>
+            <li><a href="#">Calendar</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </div>
 
+    <div id="main">
+        <h2>Dashboard</h2>
+        <div class="column" id="column1">
+            <h3>Column 1</h3>
+            <div class="task" draggable="true">Task 1</div>
+            <div class="task" draggable="true">Task 2</div>
+        </div>
+        <div class="column" id="column2">
+            <h3>Column 2</h3>
+        </div>
+        <div class="column" id="column3">
+            <h3>Column 3</h3>
+        </div>
+        <div class="column" id="column4">
+            <h3>Column 4</h3>
+        </div>
+    </div>
+  </body>
 </html>

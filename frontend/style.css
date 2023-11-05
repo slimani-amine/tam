@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    display: flex;
+}
+
+.container {
+    background-color: #333;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: flex;
+}
+
+.draggable {
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid black;
+    cursor: move;
+}
+
+.draggable.dragging {
+    opacity: 0.5;
+}
+
+/* Your previous styles */
+#sidebar {
+    width: 200px;
+    background: #2c3e50;
+    padding: 20px;
+    color: #ecf0f1;
+}
+
+#sidebar h2 {
+    color: #ecf0f1;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    margin-bottom: 10px;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    color: #ecf0f1;
+}
+
+#main {
+    flex: 1;
+    padding: 20px;
+}
+
+.column {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    min-height: 100px;
+    width: 200px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.task {
+    background-color: #3498db;
+    color: #ecf0f1;
+    padding: 8px;
+    margin-bottom: 8px;
+}

@@ -37,7 +37,8 @@ button {
   padding: 1.5rem;
   display: flex;
   align-items: stretch;
-  max-height: 610px;
+  
+  height: 610px;
 }
 
 .heading {
@@ -123,7 +124,7 @@ button {
   display: flex;
   align-items: center;
 }
-#login-button {
+.login-button {
   display: flex;
   justify-content: center;
   color: #fff;
@@ -136,7 +137,7 @@ button {
   border-radius: 10px;
   height: 1rem;
 }
-#login-button:hover {
+.login-button:hover {
   opacity: 0.8;
 }
 .or {
@@ -245,7 +246,7 @@ button {
 }
 .rect3 {
   position: absolute;
-  top: 80%;
+  top: 75%;
   left: 45%;
   width: 200px;
   height: 120px;
@@ -265,7 +266,7 @@ button {
 }
 .rect4 {
   position: absolute;
-  top: 95%;
+  top: 88%;
   left: 35%;
   width: 60px;
   height: 55px;
@@ -293,7 +294,7 @@ button {
 .rect01 {
   position: absolute;
   top: 54%;
-  left: 18%;
+  left: 15%;
   width: 80px;
   height: 80px;
   border-radius: 39px;
@@ -303,7 +304,7 @@ button {
 .rect02 {
   position: absolute;
   top: 56%;
-  left: 23%;
+  left: 19%;
   width: 50px;
   height: 50px;
   border-radius: 39px;
@@ -313,8 +314,8 @@ button {
 }
 .rect11 {
   position: absolute;
-  top: 67%;
-    left: 10%;
+  top: 65%;
+  left: 8%;
   width: 136px;
   height: 90px;
   border-radius: 39px;
@@ -325,11 +326,19 @@ button {
 }
 .rect12 {
   position: absolute;
-  top: 69%;
-  left: 15%;
+  top: 67%;
+  left: 12%;
   width: 110px;
   height: 64px;
   border-radius: 39px;
   background: var(--liear, linear-gradient(180deg, #fff 0.2%, #fee5ff 122.2%));
   box-shadow: 0px 14px 15px 0px rgba(206, 170, 234, 0.44);
+}
+
+@media only screen and (max-width: 2200px) {
+  .form_main {
+    width: 30%;
+    height: 680px;
+    margin: 3% auto;
+  }
 }
