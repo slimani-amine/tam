@@ -1,40 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const draggables = document.querySelectorAll(".example-draggable");
-    const dropzone = document.querySelector(".example-dropzone");
-    const origin = document.querySelector(".example-origin");
-  
-    draggables.forEach((draggable) => {
-      draggable.addEventListener("dragstart", (event) => onDragStart(event));
-    });
-  
-    dropzone.addEventListener("dragover", (event) => onDragOver(event));
-    dropzone.addEventListener("drop", (event) => onDrop(event));
-  
-    origin.addEventListener("dragover", (event) => onDragOver(event));
-    origin.addEventListener("drop", (event) => onDrop(event));
+const draggables = document.querySelectorAll(".task");
+const droppables = document.querySelectorAll(".column");
+draggables.forEach((task) => {
+  task.addEventListener("dragstart", () => {
+    task.classList.add("is-dragging");
   });
-  
-  function onDragStart(event) {
-    event.dataTransfer.setData("text/plain", event.target.id);
-    event.currentTarget.style.backgroundColor = "yellow";
-  }
-  
-  function onDragOver(event) {
-    event.preventDefault();
-  }
-  
-  function onDrop(event) {
-    const id = event.dataTransfer.getData("text");
-    const draggableElement = document.getElementById(id);
-    const dropzone = event.target;
-  
-    if (dropzone.classList.contains("example-dropzone")) {
-      dropzone.appendChild(draggableElement);
-    } else if (dropzone.classList.contains("example-origin")) {
-      const origin = document.querySelector(".example-origin");
-      origin.appendChild(draggableElement);
+  task.addEventListener("dragend", () => {
+    task.classList.remove("is-dragging");
+  });
+});
+
+droppables.forEach((zone) => {
+  zone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+
+    const bottomTask = insertAboveTask(zone, e.clientY);
+    const curTask = document.querySelector(".is-dragging");
+
+    if (!bottomTask) {
+      zone.appendChild(curTask);
+    } else {
+      zone.insertBefore(curTask, bottomTask);
     }
-  
-    event.dataTransfer.clearData();
-  }
-  
+  });
+});
+const insertAboveTask = (zone, mouseY) => {
+  const els = zone.querySelectorAll(".task:not(.is-dragging)");
+
+  let closestTask = null;
+  let closestOffset = Number.NEGATIVE_INFINITY;
+
+  els.forEach((task) => {
+    const { top } = task.getBoundingClientRect();
+
+    const offset = mouseY - top;
+
+    if (offset < 0 && offset > closestOffset) {
+      closestOffset = offset;
+      closestTask = task;
+    }
+  });
+
+  return closestTask;
+};

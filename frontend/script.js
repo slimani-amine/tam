@@ -10,21 +10,24 @@ if (!token) {
   //   model.logout();
   // });
   //
-  const content = document.querySelector('.content')
-  const main = document.querySelector('#main')
-  const listItems = document.querySelectorAll('.tasks-navbar-list');
-  const listNavbarContent = document.querySelectorAll('.navbar-content-link');
-  const withoutSideBar = document.querySelector('.search-icons1')
-  const withSideBar = document.querySelector('.search-icons2')
-  const sidebar = document.querySelector('.lists')
-
+  const content = document.querySelector(".content");
+  const main = document.querySelector("#main");
+  const listItems = document.querySelectorAll(".tasks-navbar-list");
+  const listItem = document.querySelector(".tasks-navbar-list");
+  const listNavbarContent = document.querySelectorAll(".navbar-content-link");
+  const withoutSideBar = document.querySelector(".search-icons1");
+  const withSideBar = document.querySelector(".search-icons2");
+  const sidebar = document.querySelector(".lists");
+  const columns = document.querySelector(".columns");
+  const lists = document.querySelector(".lists");
+  const timeline = document.querySelector(".timeline");
   //sidebar
-  withoutSideBar.addEventListener('click', () => {
-    sidebar.style.display = "none"
-  })
-  withSideBar.addEventListener('click', () => {
-    sidebar.style.display = "block"
-  })
+  withoutSideBar.addEventListener("click", () => {
+    sidebar.style.display = "none";
+  });
+  withSideBar.addEventListener("click", () => {
+    sidebar.style.display = "block";
+  });
 
   document.addEventListener("DOMContentLoaded", function () {
     const listItems = document.querySelectorAll(".list2");
@@ -45,42 +48,49 @@ if (!token) {
     });
   });
 
-
-
-
   //nav
   listNavbarContent.forEach((item) => {
-    item.addEventListener('click', () => {
+    item.addEventListener("click", () => {
       listNavbarContent.forEach((li) => {
-        li.classList.remove('navbar-content-a-clicked')
-      })
-      item.classList.add('navbar-content-a-clicked');
-      main.style.display = "none"
-      if (item.textContent.trim() === 'Tasks') {
-        main.style.display = "block"
+        li.classList.remove("navbar-content-a-clicked");
+      });
+      item.classList.add("navbar-content-a-clicked");
+      main.style.display = "none";
+      if (item.textContent.trim() === "Tasks") {
+        main.style.display = "block";
       }
-    })
-  })
-
-  // tasks
-  listItems.forEach((item) => {
-    item.addEventListener('click', () => {
-      listItems.forEach((li) => {
-        li.classList.remove('tasks-navbar-list-checked')
-      })
-      item.classList.add('tasks-navbar-list-checked');
-      content.innerHTML = ""
-      if (item.textContent.trim() === 'board') {
-        content.insertAdjacentHTML('beforeend', board);
-      }
-      else if (item.textContent.trim() === 'List') {
-        content.insertAdjacentHTML('beforeend', "<div> sooon </div>");
-
-      } else {
-        content.insertAdjacentHTML('beforeend', "<div> sooon </div>");
-      }
-
     });
   });
 
+  // tasks
+  listItem.classList.add("tasks-navbar-list-checked");
+  columns.style.display = "none";
+  lists.style.display = "none";
+  timeline.style.display = "none";
+  listItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      columns.style.display = "none";
+      lists.style.display = "none";
+      timeline.style.display = "none";
+      listItems.forEach((li) => {
+        li.classList.remove("tasks-navbar-list-checked");
+      });
+
+      item.classList.add("tasks-navbar-list-checked");
+
+      if (item.textContent.trim() === "board") {
+        columns.style.display = "flex";
+        lists.style.display = "none";
+        timeline.style.display = "none";
+      } else if (item.textContent.trim() === "List") {
+        lists.style.display = "flex";
+        columns.style.display = "none";
+        timeline.style.display = "none";
+      } else {
+        timeline.style.display = "flex";
+        columns.style.display = "none";
+        lists.style.display = "none";
+      }
+    });
+  });
 }
