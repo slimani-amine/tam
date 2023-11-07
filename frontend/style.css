@@ -5,7 +5,6 @@ body {
   height: 100%;
   margin: 0;
   display: flex;
-  overflow: hidden;
   font-family: "Outfit";
   width: 100%;
 }
@@ -186,7 +185,9 @@ svg:hover {
   margin: 0;
   display: none;
 }
-
+.flagLi:hover{
+    background-color: #cfacfe;
+}
 .dropdown-content {
   display: flex;
   height: 40px;
