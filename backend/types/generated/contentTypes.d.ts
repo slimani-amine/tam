@@ -362,6 +362,73 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
+export interface ApiProjectProject extends Schema.CollectionType {
+  collectionName: 'projects';
+  info: {
+    singularName: 'project';
+    pluralName: 'projects';
+    displayName: 'project';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Name: Attribute.String & Attribute.Required;
+    url: Attribute.Text;
+    tasks: Attribute.Relation<
+      'api::project.project',
+      'oneToMany',
+      'api::task.task'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::project.project',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::project.project',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTaskTask extends Schema.CollectionType {
+  collectionName: 'tasks';
+  info: {
+    singularName: 'task';
+    pluralName: 'tasks';
+    displayName: 'task';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String & Attribute.Required;
+    description: Attribute.Text;
+    attachement: Attribute.Media;
+    priority: Attribute.String;
+    status: Attribute.Enumeration<
+      ['new request', 'in progress', 'to be tested', 'completed']
+    > &
+      Attribute.DefaultTo<'new request'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::task.task', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::task.task', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -616,6 +683,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.role'
     >;
     phoneNumber: Attribute.BigInteger;
+    projects: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::project.project'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -687,6 +759,8 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
+      'api::project.project': ApiProjectProject;
+      'api::task.task': ApiTaskTask;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;

@@ -20,6 +20,7 @@ export const login = async (inputValues) => {
     const data = await res.json();
     if (data.jwt) {
       localStorage.setItem("token", data.jwt);
+      localStorage.setItem("userId", data.user.id);
       window.location.assign("../index.html");
     }
   } catch (error) {
@@ -40,9 +41,10 @@ export const register = async (inputValues) => {
       throw new Error("Failed to register user");
     }
     const data = await res.json();
-
+    
     if (data.jwt) {
       localStorage.setItem("token", data.jwt);
+      localStorage.setItem("userId", data.user.id);
       window.location.assign("../index.html");
     }
     console.log(data, "registred");
@@ -53,5 +55,6 @@ export const register = async (inputValues) => {
 
 export const logout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("userId");
   window.location.assign("http://127.0.0.1:5500/frontend/auth/login.html");
 };

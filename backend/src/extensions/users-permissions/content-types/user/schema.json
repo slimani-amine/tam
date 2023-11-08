@@ -67,6 +67,11 @@
     },
     "phoneNumber": {
       "type": "biginteger"
+    },
+    "projects": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project.project"
     }
   }
 }

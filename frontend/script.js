@@ -1,4 +1,6 @@
 import * as model from "./auth/model.js";
+import { getProjects, getTasks, submitNewProject, submitNewTask } from "./model.js";
+import renderTasks from "./Views/renderTasks.js"
 const token = localStorage.getItem("token");
 if (!token) {
   window.location.assign("./auth/login.html");
@@ -16,19 +18,119 @@ if (!token) {
   const lists = document.querySelector(".lists");
   const timeline = document.querySelector(".timeline");
   const noTasks = document.querySelector(".no-tasks");
-  //sidebar
-  withoutSideBar.addEventListener("click", () => {
-    sidebar.style.display = "none";
-  });
-  withSideBar.addEventListener("click", () => {
-    sidebar.style.display = "block";
-  });
+  let tasksData = false
 
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async () => {
+    listItem.classList.add("tasks-navbar-list-checked");
+    if (tasksData) {
+      columns.style.display = "none";
+      lists.style.display = "none";
+      timeline.style.display = "none";
+      noTasks.style.display = "block";
+    }
+
     const listItems = document.querySelectorAll(".list2");
     const dropdown1 = document.querySelectorAll(".dropdown1");
     const dropdown2 = document.querySelectorAll(".dropdown2");
     const dropdownContents = document.querySelectorAll(".dropdown-contents");
+    const allProjectContents = document.querySelector('#allProject-contents')
+
+
+    const data = await getProjects();
+    data && data.map((project) => {
+      let html = `<div class="dropdown-content" data-project-id="${project.id}">
+      <svg
+      xmlns="http://www.w3.org/2000/svg"
+      style="display: block"
+      width="15"
+      height="16"
+      viewBox="0 0 15 16"
+      fill="none"
+    >
+      <path
+        d="M5.62513 11.6751V4.69382C5.62441 4.56968 5.66067 4.44814 5.7293 4.34469C5.79793 4.24124 5.8958 4.16057 6.01046 4.11296C6.12511 4.06536 6.25134 4.05298 6.37306 4.0774C6.49478 4.10181 6.60647 4.16193 6.69388 4.25007L10.1814 7.74382C10.2978 7.86092 10.3631 8.01933 10.3631 8.18445C10.3631 8.34956 10.2978 8.50797 10.1814 8.62507L6.69388 12.1188C6.60647 12.207 6.49478 12.2671 6.37306 12.2915C6.25134 12.3159 6.12511 12.3035 6.01046 12.2559C5.8958 12.2083 5.79793 12.1277 5.7293 12.0242C5.66067 11.9208 5.62441 11.7992 5.62513 11.6751Z"
+        fill="#98A2B3"
+      />
+    </svg>
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="15"
+      height="16"
+      viewBox="0 0 15 16"
+      fill="none"
+      style="transform: rotate(-90deg)"
+    >
+      <path
+        d="M11.1751 9.87493L4.19382 9.87493C4.06968 9.87565 3.94814 9.83939 3.84469 9.77076C3.74124 9.70213 3.66057 9.60426 3.61296 9.4896C3.56536 9.37495 3.55298 9.24872 3.5774 9.127C3.60181 9.00528 3.66193 8.8936 3.75007 8.80618L7.24382 5.31867C7.36092 5.20226 7.51933 5.13692 7.68445 5.13692C7.84956 5.13692 8.00797 5.20226 8.12507 5.31867L11.6188 8.80618C11.707 8.8936 11.7671 9.00528 11.7915 9.127C11.8159 9.24872 11.8035 9.37495 11.7559 9.4896C11.7083 9.60426 11.6277 9.70213 11.5242 9.77076C11.4208 9.83939 11.2992 9.87565 11.1751 9.87493Z"
+        fill="white"
+      />
+    </svg>
+    <img class="project-img" src=${project.url} alt="" />
+    <p>${project.Name}</p>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+    >
+      <g clip-path="url(#clip0_2_3352)">
+        <path
+          d="M4.99996 1.66667C5.46019 1.66667 5.83329 1.29357 5.83329 0.833333C5.83329 0.373096 5.46019 0 4.99996 0C4.53972 0 4.16663 0.373096 4.16663 0.833333C4.16663 1.29357 4.53972 1.66667 4.99996 1.66667Z"
+          fill="white"
+        />
+        <path
+          d="M4.99996 5.83347C5.46019 5.83347 5.83329 5.46038 5.83329 5.00014C5.83329 4.5399 5.46019 4.16681 4.99996 4.16681C4.53972 4.16681 4.16663 4.5399 4.16663 5.00014C4.16663 5.46038 4.53972 5.83347 4.99996 5.83347Z"
+          fill="white"
+        />
+        <path
+          d="M4.99996 9.99987C5.46019 9.99987 5.83329 9.62677 5.83329 9.16653C5.83329 8.70629 5.46019 8.33319 4.99996 8.33319C4.53972 8.33319 4.16663 8.70629 4.16663 9.16653C4.16663 9.62677 4.53972 9.99987 4.99996 9.99987Z"
+          fill="white"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_2_3352">
+          <rect width="10" height="10" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+    <span>+</span>
+      </div>`;
+      allProjectContents.insertAdjacentHTML('afterbegin', html);
+      const dropdownContent = document.querySelectorAll('.dropdown-content');
+      let previousContent = null;
+
+      dropdownContent.forEach((content) => {
+        content.addEventListener('click', async () => {
+          if (previousContent) {
+            previousContent.style.background = '';
+            previousContent.style.height = '';
+            previousContent.style.margin = '';
+          }
+          content.style.background = '#986AAA';
+          content.style.height = '25px';
+          content.style.margin = '2px';
+          content.style.marginBottom = '20px';
+
+          previousContent = content;
+
+          const projectId = content.getAttribute('data-project-id');
+          const tasks = await getTasks(projectId);
+
+          if (!tasks) {
+            noTasks.style.display = "block";
+            lists.style.display = "none";
+          } else {
+            tasksData = true
+            noTasks.style.display = "none";
+
+          }
+          renderTasks(tasks);
+
+        });
+      });
+    });
 
     listItems.forEach((item, i) => {
       item.addEventListener("click", function () {
@@ -44,33 +146,13 @@ if (!token) {
         }
       });
     });
-  });
 
-  //nav
-  listNavbar.classList.add("navbar-content-a-clicked");
-  listNavbarContent.forEach((item) => {
-    item.addEventListener("click", () => {
-      listNavbarContent.forEach((li) => {
-        li.classList.remove("navbar-content-a-clicked");
-      });
-      item.classList.add("navbar-content-a-clicked");
-      main.style.display = "none";
-      if (item.textContent.trim() === "Tasks") {
-        main.style.display = "block";
-      }
-    });
+
   });
 
   // tasks
-  let tasks = true;
-  if (tasks) {
-    listItem.classList.add("tasks-navbar-list-checked");
-  } else {
-    listItem.classList.add("tasks-navbar-list-checked");
-    noTasks.style.display = "block";
 
-    lists.style.display = "none";
-  }
+
   listItems.forEach((item) => {
     item.addEventListener("click", () => {
       columns.style.display = "none";
@@ -81,7 +163,7 @@ if (!token) {
       });
 
       item.classList.add("tasks-navbar-list-checked");
-      if (tasks) {
+      if (tasksData) {
         if (item.textContent.trim() === "board") {
           columns.style.display = "flex";
           lists.style.display = "none";
@@ -100,6 +182,31 @@ if (!token) {
       }
     });
   });
+
+
+  //sidebar +get user projects 
+  withoutSideBar.addEventListener("click", () => {
+    sidebar.style.display = "none";
+  });
+  withSideBar.addEventListener("click", () => {
+    sidebar.style.display = "block";
+  });
+
+  //nav
+  listNavbar.classList.add("navbar-content-a-clicked");
+  listNavbarContent.forEach((item) => {
+    item.addEventListener("click", () => {
+      listNavbarContent.forEach((li) => {
+        li.classList.remove("navbar-content-a-clicked");
+      });
+      item.classList.add("navbar-content-a-clicked");
+      main.style.display = "none";
+      if (item.textContent.trim() === "Tasks") {
+        main.style.display = "block";
+      }
+    });
+  });
+
 
   document.addEventListener("DOMContentLoaded", function () {
     const lists = document.querySelectorAll(".list");
@@ -174,6 +281,19 @@ if (!token) {
   close.addEventListener("click", () => {
     addProject.style.display = "none";
   });
+  const addProjectForm = document.querySelector('.addProjectForm')
+  addProjectForm.addEventListener('submit', async (e) => {
+    try {
+      e.preventDefault()
+      const nameOfProject = document.querySelector('#nameOfProject').value
+      const urlOfProject = document.querySelector('#urlOfProject').value
+      await submitNewProject({ Name: nameOfProject, url: urlOfProject })
+      location.reload();
+    } catch (error) {
+      console.log(err, "something wrong !")
+    }
+  })
+
 
   //add task
   const newTask = document.querySelectorAll(".list-button");
@@ -188,13 +308,27 @@ if (!token) {
   closeAddTask.addEventListener("click", () => {
     addTask.style.display = "none";
   });
+  const addTaskForm = document.querySelector('.addTaskForm')
+  addProjectForm.addEventListener('submit', async (e) => {
+    try {
+      e.preventDefault()
+      const nameOfTask = document.querySelector('#nameOfTask').value
+      const descOfTask = document.querySelector('#descOfTask').value
+      await submitNewTask({ Name: nameOfTask, url: descOfTask })
+      location.reload();
+    } catch (error) {
+      console.log(err, "something wrong !")
+    }
+  })
+
+
 
   //priority flags
 
-const flags = document.querySelectorAll(".priority-flag");
+  const flags = document.querySelectorAll(".priority-flag");
 
-flags.forEach((flag) => {
-  const html = `<div class="flags">
+  flags.forEach((flag) => {
+    const html = `<div class="flags">
   <ul style="background-color: #fff">
     <li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
       <svg
@@ -278,31 +412,32 @@ flags.forEach((flag) => {
     </li>
   </ul>
   </div>`;
-  let isFlagOpen = false;
-  let flagContainer = null;
+    let isFlagOpen = false;
+    let flagContainer = null;
 
-  flag.addEventListener("click", (event) => {
-    event.stopPropagation(); 
+    flag.addEventListener("click", (event) => {
+      event.stopPropagation();
 
-    if (!isFlagOpen) {
-      flag.insertAdjacentHTML("afterend", html);
-      isFlagOpen = true;
-      flagContainer = flag.nextElementSibling;
-    } else {
-      flagContainer.style.display = "none";
-      isFlagOpen = false;
-      flagContainer = null;
-    }
+      if (!isFlagOpen) {
+        flag.insertAdjacentHTML("afterend", html);
+        isFlagOpen = true;
+        flagContainer = flag.nextElementSibling;
+      } else {
+        flagContainer.style.display = "none";
+        isFlagOpen = false;
+        flagContainer = null;
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (isFlagOpen && flagContainer && !flagContainer.contains(event.target)) {
+        flagContainer.style.display = "none";
+        isFlagOpen = false;
+        flagContainer = null;
+      }
+    });
   });
 
-  document.addEventListener("click", (event) => {
-    if (isFlagOpen && flagContainer && !flagContainer.contains(event.target)) {
-      flagContainer.style.display = "none";
-      isFlagOpen = false;
-      flagContainer = null;
-    }
-  });
-});
 
 
 }
