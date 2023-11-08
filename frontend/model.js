@@ -1,20 +1,23 @@
-const userId = localStorage.getItem('userId')
+const userId = localStorage.getItem("userId");
 
 export const getProjects = async () => {
   try {
-    const res = await fetch(`http://localhost:1337/api/users/${userId}?populate=*`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `http://localhost:1337/api/users/${userId}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (!res.ok) {
       throw new Error("Failed to getProjects of user");
     }
     const data = await res.json();
 
     if (data.projects) {
-      return data.projects
+      return data.projects;
     }
     console.log(data.projects, "projects");
   } catch (error) {
@@ -23,26 +26,29 @@ export const getProjects = async () => {
 };
 export const getTasks = async (projectId) => {
   try {
-    const res = await fetch(`http://localhost:1337/api/projects/${projectId}?populate=*`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `http://localhost:1337/api/projects/${projectId}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (!res.ok) {
       throw new Error("Failed to getTasks ");
     }
     const { data } = await res.json();
 
     if (data.attributes) {
-      return data.attributes.tasks.data
+      return data.attributes.tasks.data;
     }
     console.log(data.attributes.tasks.data, "tasks");
   } catch (error) {
     console.log(error);
   }
 };
-export const submitNewProject = async function (newProject) {
+const submitNewProject = async function (newProjectData) {
   try {
     const jwtToken = localStorage.getItem("token");
     const res = await fetch(`http://localhost:1337/api/projects`, {
@@ -51,35 +57,38 @@ export const submitNewProject = async function (newProject) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify({ data: newProject }),
+      body: JSON.stringify({ data: newProjectData }),
     });
     const { data } = await res.json();
     return data;
   } catch (err) {
-    alert(err)
+    console.log(err);
   }
 };
-export const pushNewProject = async function (newProject) {
+export const pushNewProject = async function (newProjectData) {
   try {
-    
     const jwtToken = localStorage.getItem("token");
-    const lastData=await getProjects()
-    lastData && lastData.filter()
+    const newProject = await submitNewProject(newProjectData);
+    const user = {
+      projects: [newProject.id],
+    };
+
     const res = await fetch(`http://localhost:1337/api/users/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify({ data: newProject }),
+      body: JSON.stringify({ user }),
     });
+
     const { data } = await res.json();
     return data;
   } catch (err) {
-    alert(err)
+    console.log(err);
   }
 };
-export const submitNewTask = async function (newTask) {
+export const submitNewTask = async function (newTaskData) {
   try {
     const jwtToken = localStorage.getItem("token");
     const res = await fetch(`http://localhost:1337/api/tasks`, {
@@ -88,11 +97,33 @@ export const submitNewTask = async function (newTask) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify({ data: newTask }),
+      body: JSON.stringify({ data: newTaskData }),
     });
     const { data } = await res.json();
     return data;
   } catch (err) {
-    alert(err)
+    console.log(err);
+  }
+};
+export const pushNewTask = async function (newTaskData) {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const newTask = await submitNewTask(newTaskData);
+    const project = {
+      tasks: [newTask.id],
+    };
+    const res = await fetch(`http://localhost:1337/api/projects/${projectId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ project }),
+    });
+
+    const { data } = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
   }
 };

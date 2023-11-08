@@ -1,11 +1,15 @@
 import * as model from "./auth/model.js";
-import { getProjects, getTasks, submitNewProject, submitNewTask } from "./model.js";
-import renderTasks from "./Views/renderTasks.js"
+import {
+  getProjects,
+  getTasks,
+  pushNewProject,
+  pushNewTask,
+} from "./model.js";
+import renderTasks from "./Views/renderTasks.js";
 const token = localStorage.getItem("token");
 if (!token) {
   window.location.assign("./auth/login.html");
 } else {
-  const content = document.querySelector(".content");
   const main = document.querySelector("#main");
   const listItems = document.querySelectorAll(".tasks-navbar-list");
   const listItem = document.querySelector(".tasks-navbar-list");
@@ -18,7 +22,7 @@ if (!token) {
   const lists = document.querySelector(".lists");
   const timeline = document.querySelector(".timeline");
   const noTasks = document.querySelector(".no-tasks");
-  let tasksData = false
+  let tasksData = false;
 
   document.addEventListener("DOMContentLoaded", async () => {
     listItem.classList.add("tasks-navbar-list-checked");
@@ -33,12 +37,12 @@ if (!token) {
     const dropdown1 = document.querySelectorAll(".dropdown1");
     const dropdown2 = document.querySelectorAll(".dropdown2");
     const dropdownContents = document.querySelectorAll(".dropdown-contents");
-    const allProjectContents = document.querySelector('#allProject-contents')
-
+    const allProjectContents = document.querySelector("#allProject-contents");
 
     const data = await getProjects();
-    data && data.map((project) => {
-      let html = `<div class="dropdown-content" data-project-id="${project.id}">
+    data &&
+      data.map((project) => {
+        let html = `<div class="dropdown-content" data-project-id="${project.id}">
       <svg
       xmlns="http://www.w3.org/2000/svg"
       style="display: block"
@@ -97,40 +101,38 @@ if (!token) {
     </svg>
     <span>+</span>
       </div>`;
-      allProjectContents.insertAdjacentHTML('afterbegin', html);
-      const dropdownContent = document.querySelectorAll('.dropdown-content');
-      let previousContent = null;
+        allProjectContents.insertAdjacentHTML("afterbegin", html);
+        const dropdownContent = document.querySelectorAll(".dropdown-content");
+        let previousContent = null;
 
-      dropdownContent.forEach((content) => {
-        content.addEventListener('click', async () => {
-          if (previousContent) {
-            previousContent.style.background = '';
-            previousContent.style.height = '';
-            previousContent.style.margin = '';
-          }
-          content.style.background = '#986AAA';
-          content.style.height = '25px';
-          content.style.margin = '2px';
-          content.style.marginBottom = '20px';
+        dropdownContent.forEach((content) => {
+          content.addEventListener("click", async () => {
+            if (previousContent) {
+              previousContent.style.background = "";
+              previousContent.style.height = "";
+              previousContent.style.margin = "";
+            }
+            content.style.background = "#986AAA";
+            content.style.height = "25px";
+            content.style.margin = "2px";
+            content.style.marginBottom = "20px";
 
-          previousContent = content;
+            previousContent = content;
 
-          const projectId = content.getAttribute('data-project-id');
-          const tasks = await getTasks(projectId);
-
-          if (!tasks) {
-            noTasks.style.display = "block";
-            lists.style.display = "none";
-          } else {
-            tasksData = true
-            noTasks.style.display = "none";
-
-          }
-          renderTasks(tasks);
-
+            const projectId = content.getAttribute("data-project-id");
+            const tasks = await getTasks(projectId);
+            if (!tasks) {
+              noTasks.style.display = "block";
+              lists.style.display = "none";
+            } else {
+              tasksData = true;
+              lists.style.display = "block";
+              noTasks.style.display = "none";
+            }
+            renderTasks(tasks);
+          });
         });
       });
-    });
 
     listItems.forEach((item, i) => {
       item.addEventListener("click", function () {
@@ -146,12 +148,9 @@ if (!token) {
         }
       });
     });
-
-
   });
 
   // tasks
-
 
   listItems.forEach((item) => {
     item.addEventListener("click", () => {
@@ -184,7 +183,7 @@ if (!token) {
   });
 
 
-  //sidebar +get user projects 
+  //sidebar +get user projects
   withoutSideBar.addEventListener("click", () => {
     sidebar.style.display = "none";
   });
@@ -206,7 +205,6 @@ if (!token) {
       }
     });
   });
-
 
   document.addEventListener("DOMContentLoaded", function () {
     const lists = document.querySelectorAll(".list");
@@ -271,6 +269,20 @@ if (!token) {
     }
   });
 
+  //task detalis
+  const taskList= document.querySelectorAll(".task");
+  const taskDetails = document.querySelector(".task-details-content");
+  const closeTaskDetails = document.querySelector(".Details-details");
+  taskList.forEach((e) => {
+    e.addEventListener("click", () => {
+        taskDetails.style.display = "block";
+    });
+  });
+
+  closeTaskDetails.addEventListener("click", () => {
+    taskDetails.style.display = "none";
+  });
+
   //add project
   const newProject = document.querySelector(".new-project");
   const addProject = document.querySelector(".addProject");
@@ -281,19 +293,18 @@ if (!token) {
   close.addEventListener("click", () => {
     addProject.style.display = "none";
   });
-  const addProjectForm = document.querySelector('.addProjectForm')
-  addProjectForm.addEventListener('submit', async (e) => {
+  const addProjectForm = document.querySelector(".addProjectForm");
+  addProjectForm.addEventListener("submit", async (e) => {
     try {
-      e.preventDefault()
-      const nameOfProject = document.querySelector('#nameOfProject').value
-      const urlOfProject = document.querySelector('#urlOfProject').value
-      await submitNewProject({ Name: nameOfProject, url: urlOfProject })
+      e.preventDefault();
+      const nameOfProject = document.querySelector("#nameOfProject").value;
+      const urlOfProject = document.querySelector("#urlOfProject").value;
+      await pushNewProject({ Name: nameOfProject, url: urlOfProject });
       location.reload();
     } catch (error) {
-      console.log(err, "something wrong !")
+      console.log(err, "something wrong !");
     }
-  })
-
+  });
 
   //add task
   const newTask = document.querySelectorAll(".list-button");
@@ -308,20 +319,18 @@ if (!token) {
   closeAddTask.addEventListener("click", () => {
     addTask.style.display = "none";
   });
-  const addTaskForm = document.querySelector('.addTaskForm')
-  addProjectForm.addEventListener('submit', async (e) => {
+  const addTaskForm = document.querySelector(".addTaskForm");
+  addProjectForm.addEventListener("submit", async (e) => {
     try {
-      e.preventDefault()
-      const nameOfTask = document.querySelector('#nameOfTask').value
-      const descOfTask = document.querySelector('#descOfTask').value
-      await submitNewTask({ Name: nameOfTask, url: descOfTask })
+      e.preventDefault();
+      const nameOfTask = document.querySelector("#nameOfTask").value;
+      const descOfTask = document.querySelector("#descOfTask").value;
+      await pushNewTask({ Name: nameOfTask, url: descOfTask });
       location.reload();
     } catch (error) {
-      console.log(err, "something wrong !")
+      console.log(err, "something wrong !");
     }
-  })
-
-
+  });
 
   //priority flags
 
@@ -430,14 +439,15 @@ if (!token) {
     });
 
     document.addEventListener("click", (event) => {
-      if (isFlagOpen && flagContainer && !flagContainer.contains(event.target)) {
+      if (
+        isFlagOpen &&
+        flagContainer &&
+        !flagContainer.contains(event.target)
+      ) {
         flagContainer.style.display = "none";
         isFlagOpen = false;
         flagContainer = null;
       }
     });
   });
-
-
-
 }
