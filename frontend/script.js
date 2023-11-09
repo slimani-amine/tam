@@ -6,6 +6,7 @@ import {
   pushNewTask,
 } from "./model.js";
 import renderTasks from "./Views/renderTasks.js";
+import { dragAndDrop } from "./Views/dragAndDrop.js"
 const token = localStorage.getItem("token");
 if (!token) {
   window.location.assign("./auth/login.html");
@@ -23,7 +24,7 @@ if (!token) {
   const timeline = document.querySelector(".timeline");
   const noTasks = document.querySelector(".no-tasks");
   let tasksData = false;
-
+  let selectedProjectId = 0
   document.addEventListener("DOMContentLoaded", async () => {
     listItem.classList.add("tasks-navbar-list-checked");
     if (tasksData) {
@@ -38,7 +39,7 @@ if (!token) {
     const dropdown2 = document.querySelectorAll(".dropdown2");
     const dropdownContents = document.querySelectorAll(".dropdown-contents");
     const allProjectContents = document.querySelector("#allProject-contents");
-
+    let i = 0
     const data = await getProjects();
     data &&
       data.map((project) => {
@@ -120,18 +121,166 @@ if (!token) {
             previousContent = content;
 
             const projectId = content.getAttribute("data-project-id");
+            selectedProjectId = projectId
             const tasks = await getTasks(projectId);
             if (!tasks) {
               noTasks.style.display = "block";
               lists.style.display = "none";
+
             } else {
               tasksData = true;
-              lists.style.display = "block";
               noTasks.style.display = "none";
+              i++
+              if (i === 1) {
+                lists.style.display = "block";
+              }
+
             }
+
             renderTasks(tasks);
+            //  task detalis
+            const taskList = document.querySelectorAll(".task");
+            const taskDetails = document.querySelector(".task-details");
+            const closeTaskDetails = document.querySelector(".closeTask-details");
+            taskList.forEach((e) => {
+              e.addEventListener("click", () => {
+                taskDetails.style.display = "block";
+              });
+            });
+
+            closeTaskDetails.addEventListener("click", () => {
+              taskDetails.style.display = "none";
+            });
+
+            //drag and drop
+            const draggables = document.querySelectorAll(".column-task");
+            const draggables2 = document.querySelectorAll(".task");
+            const droppables = document.querySelectorAll(".column");
+            const droppables2 = document.querySelectorAll(".list");
+
+            dragAndDrop(draggables, draggables2, droppables, droppables2)
+
+            //priority flags
+            const flags = document.querySelectorAll(".priority-flag");
+
+            flags.forEach((flag) => {
+              const html = `<div class="flags">
+            <ul style="background-color: #fff">
+              <li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="18"
+                  viewBox="0 0 16 18"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+                    fill="#F04438"
+                  />
+                  <path
+                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+                    stroke="#F04438"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Urgent
+              </li>
+              <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="18"
+                  viewBox="0 0 16 18"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+                    fill="#0BA5EC"
+                  />
+                  <path
+                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+                    stroke="#0BA5EC"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Normal
+              </li>
+              <li  style="display: flex; justify-content: space-between ;gap:5px;">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="18"
+                  viewBox="0 0 16 18"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+                    fill="#FFB700"
+                  />
+                  <path
+                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+                    stroke="#FFB700"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                High
+              </li>
+              <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="18"
+                  viewBox="0 0 16 18"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+                    fill="#B8B6B6"
+                  />
+                  <path
+                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+                    stroke="#B8B6B6"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Low
+              </li>
+            </ul>
+            </div>`;
+              let isFlagOpen = false;
+              let flagContainer = null;
+              flag.addEventListener("click", (event) => {
+                event.stopPropagation();
+
+                if (!isFlagOpen) {
+                  flag.insertAdjacentHTML("afterend", html);
+                  isFlagOpen = true;
+                  flagContainer = flag.nextElementSibling;
+                } else {
+                  flagContainer.style.display = "none";
+                  isFlagOpen = false;
+                  flagContainer = null;
+                }
+              });
+
+              document.addEventListener("click", (event) => {
+                if (
+                  isFlagOpen &&
+                  flagContainer &&
+                  !flagContainer.contains(event.target)
+                ) {
+                  flagContainer.style.display = "none";
+                  isFlagOpen = false;
+                  flagContainer = null;
+                }
+              });
+            });
+
           });
         });
+
+
       });
 
     listItems.forEach((item, i) => {
@@ -160,7 +309,6 @@ if (!token) {
       listItems.forEach((li) => {
         li.classList.remove("tasks-navbar-list-checked");
       });
-
       item.classList.add("tasks-navbar-list-checked");
       if (tasksData) {
         if (item.textContent.trim() === "board") {
@@ -269,19 +417,7 @@ if (!token) {
     }
   });
 
-  //task detalis
-  const taskList= document.querySelectorAll(".task");
-  const taskDetails = document.querySelector(".task-details-content");
-  const closeTaskDetails = document.querySelector(".Details-details");
-  taskList.forEach((e) => {
-    e.addEventListener("click", () => {
-        taskDetails.style.display = "block";
-    });
-  });
 
-  closeTaskDetails.addEventListener("click", () => {
-    taskDetails.style.display = "none";
-  });
 
   //add project
   const newProject = document.querySelector(".new-project");
@@ -299,155 +435,49 @@ if (!token) {
       e.preventDefault();
       const nameOfProject = document.querySelector("#nameOfProject").value;
       const urlOfProject = document.querySelector("#urlOfProject").value;
-      await pushNewProject({ Name: nameOfProject, url: urlOfProject });
+      const result = await pushNewProject({ Name: nameOfProject, url: urlOfProject });
       location.reload();
     } catch (error) {
-      console.log(err, "something wrong !");
+      console.error(error, "something wrong!");
     }
+
   });
 
   //add task
   const newTask = document.querySelectorAll(".list-button");
   const addTask = document.querySelector(".addTask");
   const closeAddTask = document.querySelector(".closeAddTask");
+  const noTasksButton = document.querySelector('.no-tasks-button')
+  const columnaddtask = document.querySelectorAll('.addtask')
   newTask.forEach((e) => {
     e.addEventListener("click", () => {
       addTask.style.display = "block";
     });
   });
-
+  columnaddtask.forEach((e) => {
+    e.addEventListener("click", () => {
+      addTask.style.display = "block";
+    });
+  });
+  noTasksButton.addEventListener("click", () => {
+    addTask.style.display = "block";
+  });
   closeAddTask.addEventListener("click", () => {
     addTask.style.display = "none";
   });
   const addTaskForm = document.querySelector(".addTaskForm");
-  addProjectForm.addEventListener("submit", async (e) => {
+  addTaskForm.addEventListener("submit", async (e) => {
     try {
       e.preventDefault();
       const nameOfTask = document.querySelector("#nameOfTask").value;
       const descOfTask = document.querySelector("#descOfTask").value;
-      await pushNewTask({ Name: nameOfTask, url: descOfTask });
+      const statusOfTask = document.querySelector(".addTask-select").value;
+      await pushNewTask({ title: nameOfTask, description: descOfTask, status: statusOfTask }, selectedProjectId);
       location.reload();
+
     } catch (error) {
-      console.log(err, "something wrong !");
+      console.log(error, "something wrong !");
     }
   });
 
-  //priority flags
-
-  const flags = document.querySelectorAll(".priority-flag");
-
-  flags.forEach((flag) => {
-    const html = `<div class="flags">
-  <ul style="background-color: #fff">
-    <li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="18"
-        viewBox="0 0 16 18"
-        fill="none"
-      >
-        <path
-          d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-          fill="#F04438"
-        />
-        <path
-          d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-          stroke="#F04438"
-          stroke-linecap="round"
-        />
-      </svg>
-      Urgent
-    </li>
-    <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="18"
-        viewBox="0 0 16 18"
-        fill="none"
-      >
-        <path
-          d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-          fill="#0BA5EC"
-        />
-        <path
-          d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-          stroke="#0BA5EC"
-          stroke-linecap="round"
-        />
-      </svg>
-      Normal
-    </li>
-    <li  style="display: flex; justify-content: space-between ;gap:5px;">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="18"
-        viewBox="0 0 16 18"
-        fill="none"
-      >
-        <path
-          d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-          fill="#FFB700"
-        />
-        <path
-          d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-          stroke="#FFB700"
-          stroke-linecap="round"
-        />
-      </svg>
-      High
-    </li>
-    <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="18"
-        viewBox="0 0 16 18"
-        fill="none"
-      >
-        <path
-          d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-          fill="#B8B6B6"
-        />
-        <path
-          d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-          stroke="#B8B6B6"
-          stroke-linecap="round"
-        />
-      </svg>
-      Low
-    </li>
-  </ul>
-  </div>`;
-    let isFlagOpen = false;
-    let flagContainer = null;
-
-    flag.addEventListener("click", (event) => {
-      event.stopPropagation();
-
-      if (!isFlagOpen) {
-        flag.insertAdjacentHTML("afterend", html);
-        isFlagOpen = true;
-        flagContainer = flag.nextElementSibling;
-      } else {
-        flagContainer.style.display = "none";
-        isFlagOpen = false;
-        flagContainer = null;
-      }
-    });
-
-    document.addEventListener("click", (event) => {
-      if (
-        isFlagOpen &&
-        flagContainer &&
-        !flagContainer.contains(event.target)
-      ) {
-        flagContainer.style.display = "none";
-        isFlagOpen = false;
-        flagContainer = null;
-      }
-    });
-  });
 }

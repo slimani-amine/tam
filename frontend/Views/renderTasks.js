@@ -4,7 +4,7 @@ const clearElement = (element) => {
 
 const createTaskHtml = (task) => {
   return `
-  <div class="task" draggable="true">
+
   <div class="task-content">
     <svg
     class="dragIcon"
@@ -80,7 +80,7 @@ const createTaskHtml = (task) => {
     </svg>
     <p>${task.attributes.title}</p>
   </div>
-  <div class="task-details">
+  <div class="task-detail">
     <img src="public/icons/Avatar group 2.png" />
     <p style="width: 15%; margin-left: 7%">07 Sep</p>
     <svg
@@ -133,23 +133,22 @@ const createTaskHtml = (task) => {
       />
     </svg>
   </div>
-</div>
+
   `;
 };
 
-const createBoardHtml = () => {
+
+const createBoardHtml = (task) => {
   return `
-  <div class="column-task" draggable="true">
   <p>Page 1 > Page 2</p>
   <div
-  
+      style="
       display: flex;
       align-items: center;
-      gap: 80px;
-      margin: 0;
-    "
+      gap: 150px;
+      margin: 0;"
   >
-    <h3>Title of the ticket</h3>
+    <h3>${task.attributes.title}</h3>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
@@ -169,7 +168,7 @@ const createBoardHtml = () => {
     </svg>
   </div>
   <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt,
+  ${task.attributes.description}
   </p>
   <div class="column-task-tags">
     <div class="column-task-tag orange">
@@ -366,10 +365,23 @@ const createBoardHtml = () => {
       </defs>
     </svg>
   </div>
-</div>
+
   `;
 };
-
+const createDivForLists = (task) => {
+  const divList = document.createElement('div');
+  divList.classList.add("task");
+  divList.classList.add(`data-task-id="${task.id}"`);
+  divList.setAttribute('draggable', 'true');
+  return divList
+}
+const createDivForColumns = (task) => {
+  const divColumn = document.createElement('div');
+  divColumn.classList.add("column-task");
+  divColumn.classList.add(`data-task-id="${task.id}"`);
+  divColumn.setAttribute('draggable', 'true');
+  return divColumn
+}
 const renderTasks = (tasks) => {
   const newRequest = document.querySelector('#new-request');
   const inProgress = document.querySelector('#in-progress');
@@ -393,25 +405,49 @@ const renderTasks = (tasks) => {
 
   tasks && tasks.forEach((task) => {
     const listHtml = createTaskHtml(task);
-    const boardHtml = createBoardHtml();
+    const boardHtml = createBoardHtml(task);
     if (task.attributes.status === 'new request') {
-      newRequest.insertAdjacentHTML('beforeend', listHtml)
-      newRequestBord.insertAdjacentHTML('beforeend', boardHtml)
-    }
-    else if (task.attributes.status === 'in progress') {
-      inProgress.insertAdjacentHTML('beforeend', listHtml)
-      inProgressBord.insertAdjacentHTML('beforeend', boardHtml)
-    }
-    else if (task.attributes.status === 'to be tested') {
-      toBeTested.insertAdjacentHTML('beforeend', listHtml)
-      toBeTestedBord.insertAdjacentHTML('beforeend', boardHtml)
-    }
-    else if (task.attributes.status === 'completed') {
-      completed.insertAdjacentHTML('beforeend', listHtml)
-      completedBord.insertAdjacentHTML('beforeend', boardHtml)
+      let div = createDivForLists(task)
+      newRequest.appendChild(div);
+      div.innerHTML = listHtml;
+
+      let divCol = createDivForColumns(task)
+      newRequestBord.appendChild(divCol);
+      divCol.innerHTML = boardHtml;
     }
 
+
+    else if (task.attributes.status === 'in progress') {
+      let div = createDivForLists(task)
+      inProgress.appendChild(div);
+      div.innerHTML = listHtml;
+
+      let divCol = createDivForColumns(task)
+      inProgressBord.appendChild(divCol);
+      divCol.innerHTML = boardHtml;
+    }
+    else if (task.attributes.status === 'to be tested') {
+      let div = createDivForLists(task)
+      toBeTested.appendChild(div);
+      div.innerHTML = listHtml;
+
+      let divCol = createDivForColumns(task)
+      toBeTestedBord.appendChild(divCol);
+      divCol.innerHTML = boardHtml;
+    }
+    else if (task.attributes.status === 'completed') {
+      let div = createDivForLists(task)
+      completed.appendChild(div);
+      div.innerHTML = listHtml;
+
+      let divCol = createDivForColumns(task)
+      completedBord.appendChild(divCol);
+      divCol.innerHTML = boardHtml;
+    }
+    // const taskId = task.getAttribute("data-task-id");
+
   });
+
 };
 
 

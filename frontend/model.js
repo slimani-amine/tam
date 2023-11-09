@@ -15,7 +15,6 @@ export const getProjects = async () => {
       throw new Error("Failed to getProjects of user");
     }
     const data = await res.json();
-
     if (data.projects) {
       return data.projects;
     }
@@ -39,7 +38,6 @@ export const getTasks = async (projectId) => {
       throw new Error("Failed to getTasks ");
     }
     const { data } = await res.json();
-
     if (data.attributes) {
       return data.attributes.tasks.data;
     }
@@ -68,10 +66,22 @@ const submitNewProject = async function (newProjectData) {
 export const pushNewProject = async function (newProjectData) {
   try {
     const jwtToken = localStorage.getItem("token");
-    const newProject = await submitNewProject(newProjectData);
-    const user = {
-      projects: [newProject.id],
-    };
+
+    const newProject = await submitNewProject(newProjectData, userId);
+    console.log("New Project:", newProject);
+
+    const lastProjects = await getProjects(userId);
+    console.log("Existing Projects:", lastProjects);
+
+    const updatedProjects = lastProjects.concat({
+      id: newProject.id,
+      Name: newProject.attributes.Name,
+      createdAt: newProject.attributes.createdAt,
+      publishedAt: newProject.attributes.publishedAt,
+      updatedAt: newProject.attributes.updatedAt,
+      url: newProject.attributes.url
+    });
+    console.log("Updated Projects:", updatedProjects);
 
     const res = await fetch(`http://localhost:1337/api/users/${userId}`, {
       method: "PUT",
@@ -79,16 +89,20 @@ export const pushNewProject = async function (newProjectData) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify({ user }),
+      body: JSON.stringify({
+        projects: updatedProjects,
+      }),
     });
 
     const { data } = await res.json();
     return data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
-export const submitNewTask = async function (newTaskData) {
+
+
+const submitNewTask = async function (newTaskData) {
   try {
     const jwtToken = localStorage.getItem("token");
     const res = await fetch(`http://localhost:1337/api/tasks`, {
@@ -105,23 +119,38 @@ export const submitNewTask = async function (newTaskData) {
     console.log(err);
   }
 };
-export const pushNewTask = async function (newTaskData) {
+export const pushNewTask = async function (newTaskData, projectId = 1) {
   try {
     const jwtToken = localStorage.getItem("token");
     const newTask = await submitNewTask(newTaskData);
-    const project = {
-      tasks: [newTask.id],
-    };
+    console.log("New tasks:", newTask);
+
+    const lastTasks = await getTasks(projectId);
+    console.log("Existing tasks:", lastTasks);
+
+    const updatedTask = lastTasks.concat(
+      {
+        id: newTask.id,
+        title: newTask.attributes.title,
+        createdAt: newTask.attributes.createdAt,
+        publishedAt: newTask.attributes.publishedAt,
+        updatedAt: newTask.attributes.updatedAt,
+        description: newTask.attributes.description,
+        priority: newTask.attributes.priority,
+        status: newTask.attributes.status
+      });
+    console.log("Updated Task:", updatedTask)
     const res = await fetch(`http://localhost:1337/api/projects/${projectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify({ project }),
+      body: JSON.stringify({
+        data: { tasks: updatedTask },
+      }),
     });
-
-    const { data } = await res.json();
+    const data = await res.json()
     return data;
   } catch (err) {
     console.log(err);
