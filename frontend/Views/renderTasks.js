@@ -1,10 +1,10 @@
+import { translateDate } from "./translateDate.js"
 const clearElement = (element) => {
   element.innerHTML = "";
 };
 
 const createTaskHtml = (task) => {
   return `
-
   <div class="task-content">
     <svg
     class="dragIcon"
@@ -82,26 +82,11 @@ const createTaskHtml = (task) => {
   </div>
   <div class="task-detail">
     <img src="public/icons/Avatar group 2.png" />
-    <p style="width: 15%; margin-left: 7%">07 Sep</p>
-    <svg
-      style="width: 15%"
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="18"
-      viewBox="0 0 16 18"
-      class="priority-flag"
-      fill="none"
-    >
-      <path
-        d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-        fill="#F04438"
-      />
-      <path
-        d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-        stroke="#F04438"
-        stroke-linecap="round"
-      />
-    </svg>
+    <p style="width: 15%; margin-left: 7%">${translateDate(task.attributes.createdAt)}</p>
+    <svg class="priority-flag" style="width: 15%" xmlns="http://www.w3.org/2000/svg" width="17" height="18" viewBox="0 0 17 18" fill="none">
+  <path d="M1.25 11.4286V1C1.25 0.764298 1.25 0.646447 1.32322 0.573223C1.39645 0.5 1.5143 0.5 1.75 0.5H13.9849C14.5199 0.5 14.7874 0.5 14.8499 0.658113C14.9124 0.816226 14.7172 0.99912 14.3267 1.36491L9.72831 5.67236C9.58225 5.80918 9.50922 5.87759 9.50922 5.96429C9.50922 6.05098 9.58225 6.11939 9.72831 6.25621L14.3267 10.5637C14.7172 10.9295 14.9124 11.1123 14.8499 11.2705C14.7874 11.4286 14.5199 11.4286 13.9849 11.4286H1.25ZM1.25 11.4286V17.5" stroke="#AFAFAF" stroke-linecap="round"/>
+</svg>
+   
     <svg
       style="width: 15%"
       xmlns="http://www.w3.org/2000/svg"
@@ -150,6 +135,7 @@ const createBoardHtml = (task) => {
   >
     <h3>${task.attributes.title}</h3>
     <svg
+    class="priority-flag"
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="18"
@@ -403,11 +389,11 @@ const renderTasks = (tasks) => {
   clearElement(toBeTestedBord);
   clearElement(completedBord);
 
-  console.log(tasks, "tasks");
-
   tasks && tasks.forEach((task) => {
     const listHtml = createTaskHtml(task);
     const boardHtml = createBoardHtml(task);
+    // const priorityFlag = document.querySelector('priority-flag')
+
     if (task.attributes.status === 'new request') {
       let div = createDivForLists(task)
       newRequest.appendChild(div);
@@ -417,8 +403,6 @@ const renderTasks = (tasks) => {
       newRequestBord.appendChild(divCol);
       divCol.innerHTML = boardHtml;
     }
-
-
     else if (task.attributes.status === 'in progress') {
       let div = createDivForLists(task)
       inProgress.appendChild(div);
@@ -446,6 +430,19 @@ const renderTasks = (tasks) => {
       completedBord.appendChild(divCol);
       divCol.innerHTML = boardHtml;
     }
+    // if (task.attributes.flag === 'urgent') {
+    //   priorityFlag.classList.add('priority-flag-red')
+    // }
+    // else if (task.attributes.flag === 'normal') {
+    //   priorityFlag.classList.add('priority-flag-blue')
+    // }
+    // else if (task.attributes.flag === 'high') {
+    //   priorityFlag.classList.add('priority-flag-yellow')
+    // }
+    // else if (task.attributes.flag === 'low') {
+    //   priorityFlag.classList.add('priority-flag-gray')
+    // }
+
   });
 
 };

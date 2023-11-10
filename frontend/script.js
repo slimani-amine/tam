@@ -67,48 +67,9 @@ if (!token) {
       />
     </svg>
 
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="15"
-      height="16"
-      viewBox="0 0 15 16"
-      fill="none"
-      style="transform: rotate(-90deg)"
-    >
-      <path
-        d="M11.1751 9.87493L4.19382 9.87493C4.06968 9.87565 3.94814 9.83939 3.84469 9.77076C3.74124 9.70213 3.66057 9.60426 3.61296 9.4896C3.56536 9.37495 3.55298 9.24872 3.5774 9.127C3.60181 9.00528 3.66193 8.8936 3.75007 8.80618L7.24382 5.31867C7.36092 5.20226 7.51933 5.13692 7.68445 5.13692C7.84956 5.13692 8.00797 5.20226 8.12507 5.31867L11.6188 8.80618C11.707 8.8936 11.7671 9.00528 11.7915 9.127C11.8159 9.24872 11.8035 9.37495 11.7559 9.4896C11.7083 9.60426 11.6277 9.70213 11.5242 9.77076C11.4208 9.83939 11.2992 9.87565 11.1751 9.87493Z"
-        fill="white"
-      />
-    </svg>
     <img class="project-img" src=${project.url} alt="" />
     <p>${project.Name}</p>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
-    >
-      <g clip-path="url(#clip0_2_3352)">
-        <path
-          d="M4.99996 1.66667C5.46019 1.66667 5.83329 1.29357 5.83329 0.833333C5.83329 0.373096 5.46019 0 4.99996 0C4.53972 0 4.16663 0.373096 4.16663 0.833333C4.16663 1.29357 4.53972 1.66667 4.99996 1.66667Z"
-          fill="white"
-        />
-        <path
-          d="M4.99996 5.83347C5.46019 5.83347 5.83329 5.46038 5.83329 5.00014C5.83329 4.5399 5.46019 4.16681 4.99996 4.16681C4.53972 4.16681 4.16663 4.5399 4.16663 5.00014C4.16663 5.46038 4.53972 5.83347 4.99996 5.83347Z"
-          fill="white"
-        />
-        <path
-          d="M4.99996 9.99987C5.46019 9.99987 5.83329 9.62677 5.83329 9.16653C5.83329 8.70629 5.46019 8.33319 4.99996 8.33319C4.53972 8.33319 4.16663 8.70629 4.16663 9.16653C4.16663 9.62677 4.53972 9.99987 4.99996 9.99987Z"
-          fill="white"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_2_3352">
-          <rect width="10" height="10" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
+    
     <span>+</span>
         </div>`;
         allProjectContents.insertAdjacentHTML("afterbegin", html);
@@ -319,7 +280,21 @@ if (!token) {
                   flagContainer = null;
                 }
               });
-
+              const flagLi = document.querySelectorAll('.flagLi')
+              flagLi.forEach((e,i)=>{
+                e.addEventListener('click',()=>{
+                  if (i===0) {
+                    flag.classList.add('priority-flag-red')
+                  }else if (i===1) {
+                    flag.classList.add('priority-flag-blue')
+                  }else if (i===2) {
+                    flag.classList.add('priority-flag-yellow')
+                  }
+                  else if (i===3) {
+                    flag.classList.add('priority-flag-gray')
+                  }
+                })
+              })
               document.addEventListener("click", (event) => {
                 if (
                   isFlagOpen &&

@@ -419,6 +419,8 @@ export interface ApiTaskTask extends Schema.CollectionType {
       ['new request', 'in progress', 'to be tested', 'completed']
     > &
       Attribute.DefaultTo<'new request'>;
+    flag: Attribute.Enumeration<['empty', 'urgent', 'normal', 'high', 'low']> &
+      Attribute.DefaultTo<'empty'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

@@ -40,7 +40,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
     });
   });
   droppables.forEach((zone) => {
-    zone.addEventListener("dragover", (e) => {
+    zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".column").getAttribute("id")
       let status = ""
@@ -54,7 +54,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
         status = "completed"
       }
       console.log(status, taskId);
-      status && taskId && changeTask(taskId, status)
+      status && taskId && await changeTask(taskId, status)
 
       const bottomTask = insertAboveTask(zone, e.clientY);
       const curTask = document.querySelector(".is-dragging");
@@ -67,7 +67,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
     });
   });
   droppables2.forEach((zone) => {
-    zone.addEventListener("dragover", (e) => {
+    zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".list").getAttribute("id")
       let status = ""
@@ -89,8 +89,8 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
         zone.insertBefore(curTask, bottomTask);
       }
       console.log(status, taskId);
-      status && taskId && changeTask(taskId, status)
+      status && taskId && await changeTask(taskId, status)
     });
-  });
+  }); 
 }
 

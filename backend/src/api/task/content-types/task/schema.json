@@ -42,6 +42,17 @@
         "completed"
       ],
       "default": "new request"
+    },
+    "flag": {
+      "type": "enumeration",
+      "enum": [
+        "empty",
+        "urgent",
+        "normal",
+        "high",
+        "low"
+      ],
+      "default": "empty"
     }
   }
 }

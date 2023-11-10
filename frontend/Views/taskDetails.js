@@ -6,7 +6,7 @@ export const taskDetail = async (id) => {
             <div class="task-details-header">
                 <p>Project Name > Sub Project</p>
                 <div style="display: flex" class="task-details-header-right">
-                    <p style="color: #949494; font-size: 1rem">Créé le 5/26/23</p>
+                    <p style="color: #949494; font-size: 1rem">Créé le  ${taskData.createdAt.substring(0, 10)}</p>
                     <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
                         <path
                             d="M13.0975 13.2023H13.8964M13.0975 14.0012H13.8964M5.6412 13.2023H6.44009M5.6412 14.0012H6.44009M20.5538 13.2023H21.3527M20.5538 14.0012H21.3527M14.5624 13.6018C14.5624 14.1901 14.0855 14.667 13.4972 14.667C12.9089 14.667 12.432 14.1901 12.432 13.6018C12.432 13.0135 12.9089 12.5366 13.4972 12.5366C14.0855 12.5366 14.5624 13.0135 14.5624 13.6018ZM7.1061 13.6018C7.1061 14.1901 6.6292 14.667 6.04091 14.667C5.45262 14.667 4.97572 14.1901 4.97572 13.6018C4.97572 13.0135 5.45262 12.5366 6.04091 12.5366C6.6292 12.5366 7.1061 13.0135 7.1061 13.6018ZM22.0187 13.6018C22.0187 14.1901 21.5418 14.667 20.9536 14.667C20.3653 14.667 19.8884 14.1901 19.8884 13.6018C19.8884 13.0135 20.3653 12.5366 20.9536 12.5366C21.5418 12.5366 22.0187 13.0135 22.0187 13.6018Z"
@@ -125,11 +125,32 @@ export const taskDetail = async (id) => {
                             </svg>
                         </div>
                     </div>
+
+                    <div class="task-details-content-attachements">
+                        <div class="task-details-content-attachements-header">
+                            <p>Attachments</p>
+                            <p>+</p>
+                        </div>
+                        <div class="task-details-content-attachements-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="26" viewBox="0 0 27 26" fill="none">
+                            <path d="M15.4772 11.0322L11.2165 15.293" stroke="#222222" stroke-width="1.06519" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.6076 14.2279L19.738 12.0976C21.2087 10.6268 21.2087 8.24233 19.738 6.77162V6.77162C18.2672 5.3009 15.8827 5.3009 14.412 6.77161L12.2816 8.90199M9.08608 12.0976L6.9557 14.2279C5.48498 15.6987 5.48498 18.0832 6.9557 19.5539V19.5539C8.42642 21.0246 10.8109 21.0246 12.2816 19.5539L14.412 17.4235" stroke="#222222" stroke-width="1.06519" stroke-linecap="round"/>
+                        </svg>
+                            <p>Drag and drop files to attach or <a> Browse </a> </p>
+                            
+                        </div>
+                    </div>
                 </div>
                 <div class="task-details-activity">
                     <div class="task-details-activity-top">
                         <p>Activity</p>
-                        <p style="color:#374957" > title : ${taskData.title}<br/>  description : ${taskData.description} </p>
+                        <p style="color:#374957" > <svg xmlns="http://www.w3.org/2000/svg" width="5" height="9" viewBox="0 0 5 9" fill="none">
+                        <path d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z" fill="#FFA948"/>
+                      </svg> title : ${taskData.title}<br/>  
+                        
+                      <svg xmlns="http://www.w3.org/2000/svg" width="5" height="9" viewBox="0 0 5 9" fill="none">
+                      <path d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z" fill="#FFA948"/>
+                    </svg> description : ${taskData.description} </p>
                     </div>
                     <div class="task-details-activity-bottom">
                         <input type="text" placeholder="Comment" class="comment-input" />
