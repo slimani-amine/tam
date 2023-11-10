@@ -151,7 +151,27 @@
                 </li>
                 <li class="avatar-dropdown" id="avatar-dropdown">
                     <ul>
-                        <li><a href="#" id="logout-button">Logout</a></li>
+                        <li>
+                            <svg id="logout-button" fill="#000000" height="64px" width="64px" version="1.1" id="Capa_1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                viewBox="0 0 471.2 471.2" xml:space="preserve" transform="matrix(-1, 0, 0, 1, 0, 0)">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke="#CCCCCC" stroke-width="1.8847999999999998"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <g>
+                                        <g>
+                                            <path
+                                                d="M227.619,444.2h-122.9c-33.4,0-60.5-27.2-60.5-60.5V87.5c0-33.4,27.2-60.5,60.5-60.5h124.9c7.5,0,13.5-6,13.5-13.5 s-6-13.5-13.5-13.5h-124.9c-48.3,0-87.5,39.3-87.5,87.5v296.2c0,48.3,39.3,87.5,87.5,87.5h122.9c7.5,0,13.5-6,13.5-13.5 S235.019,444.2,227.619,444.2z">
+                                            </path>
+                                            <path
+                                                d="M450.019,226.1l-85.8-85.8c-5.3-5.3-13.8-5.3-19.1,0c-5.3,5.3-5.3,13.8,0,19.1l62.8,62.8h-273.9c-7.5,0-13.5,6-13.5,13.5 s6,13.5,13.5,13.5h273.9l-62.8,62.8c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4l85.8-85.8 C455.319,239.9,455.319,231.3,450.019,226.1z">
+                                            </path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -486,7 +506,7 @@
                                         <circle cx="6" cy="6.5" r="6" fill="#C5C5C5" />
                                     </svg>
                                     <h3>New Request</h3>
-                                    <span>0</span>
+                                    <span id="new-requestNumber"> </span>
                                 </div>
                                 <button class="list-button"> + New task</button>
                             </div>
@@ -520,7 +540,7 @@
                                         <circle cx="6" cy="6.5" r="6" fill="#FFA948" />
                                     </svg>
                                     <h3>In Progress</h3>
-                                    <span>0</span>
+                                    <span id="in-progressNumber"></span>
                                 </div>
                                 <button class="list-button"> + New task</button>
                             </div>
@@ -554,7 +574,7 @@
                                         <circle cx="6" cy="6.5" r="6" fill="#0BA5EC" />
                                     </svg>
                                     <h3>To be Tested</h3>
-                                    <span>0</span>
+                                    <span id="to-be-testedNumber"></span>
                                 </div>
                                 <button class="list-button"> + New task</button>
                             </div>
@@ -588,7 +608,7 @@
                                         <circle cx="6" cy="6.5" r="6" fill="#3DD455" />
                                     </svg>
                                     <h3>Completed</h3>
-                                    <span>0</span>
+                                    <span id="completedNumber"></span>
                                 </div>
                                 <button class="list-button"> + New task</button>
                             </div>
@@ -633,8 +653,7 @@
                 <label>
                     Title of the ticket :
                     <div>
-                        <input placeholder="Title of the ticket " class="addinputField" type="text"
-                            id="nameOfTask" />
+                        <input placeholder="Title of the ticket " class="addinputField" type="text" id="nameOfTask" />
                     </div>
                 </label>
                 <label>
@@ -657,144 +676,6 @@
         </div>
     </div>
     <div class="task-details">
-        <div class="modalTask-details">
-            <div class="task-details-header">
-                <p>Project Name > Sub Project</p>
-                <div style="display: flex" class="task-details-header-right">
-                    <p style="color: #949494; font-size: 1rem">Créé le 5/26/23</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
-                        <path
-                            d="M13.0975 13.2023H13.8964M13.0975 14.0012H13.8964M5.6412 13.2023H6.44009M5.6412 14.0012H6.44009M20.5538 13.2023H21.3527M20.5538 14.0012H21.3527M14.5624 13.6018C14.5624 14.1901 14.0855 14.667 13.4972 14.667C12.9089 14.667 12.432 14.1901 12.432 13.6018C12.432 13.0135 12.9089 12.5366 13.4972 12.5366C14.0855 12.5366 14.5624 13.0135 14.5624 13.6018ZM7.1061 13.6018C7.1061 14.1901 6.6292 14.667 6.04091 14.667C5.45262 14.667 4.97572 14.1901 4.97572 13.6018C4.97572 13.0135 5.45262 12.5366 6.04091 12.5366C6.6292 12.5366 7.1061 13.0135 7.1061 13.6018ZM22.0187 13.6018C22.0187 14.1901 21.5418 14.667 20.9536 14.667C20.3653 14.667 19.8884 14.1901 19.8884 13.6018C19.8884 13.0135 20.3653 12.5366 20.9536 12.5366C21.5418 12.5366 22.0187 13.0135 22.0187 13.6018Z"
-                            stroke="#374957" stroke-width="2.13038" stroke-linecap="round" />
-                    </svg>
-                    <svg class="closeTask-details" xmlns="http://www.w3.org/2000/svg" width="21" height="22"
-                        viewBox="0 0 21 22" fill="none">
-                        <g clip-path="url(#clip0_2_4937)">
-                            <path
-                                d="M12.9999 13.4684L10.4701 10.9386M10.4701 10.9386L7.94026 8.40879M10.4701 10.9386L7.94026 13.4684M10.4701 10.9386L12.9999 8.40879M1.19406 10.9386C1.19406 16.0616 5.34708 20.2146 10.4701 20.2146C15.5931 20.2146 19.7461 16.0616 19.7461 10.9386C19.7461 5.81561 15.5931 1.6626 10.4701 1.6626C5.34708 1.6626 1.19406 5.81561 1.19406 10.9386Z"
-                                stroke="#374957" stroke-width="2.13038" stroke-linecap="round" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_2_4937">
-                                <rect width="20.2386" height="20.2386" fill="white"
-                                    transform="translate(0.350815 0.81958)" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                </div>
-            </div>
-            <div class="task-details-bigcontent">
-                <div class="task-details-content">
-                    <div class="task-details-content-header">
-                        <div class="task-details-content-header-status">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13"
-                                fill="none">
-                                <circle cx="6.56458" cy="6.20874" r="6" fill="#FFA948" />
-                            </svg>
-                            <p>In Progress</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="7" viewBox="0 0 9 7" fill="none">
-                                <path
-                                    d="M4.75663 5.97827L8.47112 1.52089C8.90534 0.999826 8.53481 0.20874 7.85654 0.20874L1.27261 0.20874C0.594338 0.20874 0.223813 0.999825 0.658031 1.52089L4.37252 5.97827C4.47247 6.09821 4.65668 6.09821 4.75663 5.97827Z"
-                                    fill="#FFA948" />
-                            </svg>
-                        </div>
-                        <img src="public/icons/Avatar group (1).png" alt="" />
-                        <div class="task-details-content-header-priorityflag">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="19" viewBox="0 0 17 19"
-                                fill="none">
-                                <path
-                                    d="M1.56458 1.20874V11.6373H14.2994C14.8345 11.6373 15.102 11.6373 15.1645 11.4792C15.227 11.3211 15.0317 11.1382 14.6413 10.7724L10.0429 6.46495C9.89682 6.32813 9.82379 6.25972 9.82379 6.17303C9.82379 6.08633 9.89682 6.01792 10.0429 5.8811L14.6413 1.57365C15.0317 1.20786 15.227 1.02497 15.1645 0.866853C15.102 0.70874 14.8345 0.70874 14.2994 0.70874H2.06458C1.82887 0.70874 1.71102 0.70874 1.6378 0.781964C1.56458 0.855187 1.56458 0.973038 1.56458 1.20874Z"
-                                    fill="#FFB700" />
-                                <path
-                                    d="M1.56458 11.6373V1.20874C1.56458 0.973038 1.56458 0.855187 1.6378 0.781964C1.71102 0.70874 1.82887 0.70874 2.06458 0.70874H14.2994C14.8345 0.70874 15.102 0.70874 15.1645 0.866853C15.227 1.02497 15.0317 1.20786 14.6413 1.57365L10.0429 5.8811C9.89682 6.01792 9.82379 6.08633 9.82379 6.17303C9.82379 6.25972 9.89682 6.32813 10.0429 6.46495L14.6413 10.7724C15.0317 11.1382 15.227 11.3211 15.1645 11.4792C15.102 11.6373 14.8345 11.6373 14.2994 11.6373H1.56458ZM1.56458 11.6373V17.7087"
-                                    stroke="#FFB700" stroke-linecap="round" />
-                            </svg>
-                            <p>high</p>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none">
-                                <path
-                                    d="M11.8468 22.2778C6.93883 22.2778 2.94876 18.2877 2.94876 13.3797C2.94876 8.47176 6.93883 4.48169 11.8468 4.48169C16.7548 4.48169 20.7448 8.47176 20.7448 13.3797C20.7448 18.2877 16.7548 22.2778 11.8468 22.2778ZM11.8468 5.88664C7.71624 5.88664 4.35371 9.24916 4.35371 13.3797C4.35371 17.5103 7.71624 20.8728 11.8468 20.8728C15.9774 20.8728 19.3399 17.5103 19.3399 13.3797C19.3399 9.24916 15.9774 5.88664 11.8468 5.88664Z"
-                                    fill="#374957" />
-                                <path
-                                    d="M11.8468 13.8479C11.4628 13.8479 11.1443 13.5294 11.1443 13.1454V8.46224C11.1443 8.07822 11.4628 7.75977 11.8468 7.75977C12.2308 7.75977 12.5493 8.07822 12.5493 8.46224V13.1454C12.5493 13.5294 12.2308 13.8479 11.8468 13.8479Z"
-                                    fill="#374957" />
-                                <path
-                                    d="M14.6567 3.54509H9.03689C8.65287 3.54509 8.33441 3.22663 8.33441 2.84261C8.33441 2.45859 8.65287 2.14014 9.03689 2.14014H14.6567C15.0407 2.14014 15.3592 2.45859 15.3592 2.84261C15.3592 3.22663 15.0407 3.54509 14.6567 3.54509Z"
-                                    fill="#374957" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="task-details-content-title">
-                        Create A new Landing Page For the Website
-                    </div>
-                    <div class="task-details-content-description">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
-                            <path
-                                d="M10.9941 13.3913C10.9941 13.7985 11.3242 14.1285 11.7314 14.1285C12.1386 14.1285 12.4686 13.7985 12.4686 13.3913C12.4686 12.9841 12.1386 12.6541 11.7314 12.6541C11.3242 12.6541 10.9941 12.9841 10.9941 13.3913Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path
-                                d="M6.57068 13.3913C6.57068 13.7985 6.90075 14.1285 7.30792 14.1285C7.71509 14.1285 8.04517 13.7985 8.04517 13.3913C8.04517 12.9841 7.71509 12.6541 7.30792 12.6541C6.90075 12.6541 6.57068 12.9841 6.57068 13.3913Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path
-                                d="M10.9941 8.96783C10.9941 9.375 11.3242 9.70508 11.7314 9.70508C12.1386 9.70508 12.4686 9.375 12.4686 8.96783C12.4686 8.56067 12.1386 8.23059 11.7314 8.23059C11.3242 8.23059 10.9941 8.56067 10.9941 8.96783Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path
-                                d="M6.57068 8.96783C6.57068 9.375 6.90075 9.70508 7.30792 9.70508C7.71509 9.70508 8.04517 9.375 8.04517 8.96783C8.04517 8.56067 7.71509 8.23059 7.30792 8.23059C6.90075 8.23059 6.57068 8.56067 6.57068 8.96783Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path
-                                d="M10.9941 4.54437C10.9941 4.95154 11.3242 5.28162 11.7314 5.28162C12.1386 5.28162 12.4686 4.95154 12.4686 4.54437C12.4686 4.1372 12.1386 3.80713 11.7314 3.80713C11.3242 3.80713 10.9941 4.1372 10.9941 4.54437Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path
-                                d="M6.57068 4.54437C6.57068 4.95154 6.90075 5.28162 7.30792 5.28162C7.71509 5.28162 8.04517 4.95154 8.04517 4.54437C8.04517 4.1372 7.71509 3.80713 7.30792 3.80713C6.90075 3.80713 6.57068 4.1372 6.57068 4.54437Z"
-                                stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting
-                            industry. Lorem Ipsum has been the industry's standard dummy
-                            text ever since the 1500s, when an unknown printer took a galley
-                        </p>
-                    </div>
-                    <div class="task-details-content-tags">
-                        <div class="task-details-content-tag green">
-                            <p>Tag</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"
-                                fill="none">
-                                <path
-                                    d="M8.46098 3.37077C8.37503 3.28484 8.25847 3.23657 8.13693 3.23657C8.0154 3.23657 7.89884 3.28484 7.81289 3.37077L5.71098 5.47268L3.60906 3.37077C3.52311 3.28484 3.40655 3.23657 3.28502 3.23657C3.16348 3.23657 3.04693 3.28484 2.96098 3.37077C2.87505 3.45672 2.82678 3.57327 2.82678 3.69481C2.82678 3.81634 2.87505 3.9329 2.96098 4.01885L5.06289 6.12077L2.96098 8.22268C2.87505 8.30863 2.82678 8.42519 2.82678 8.54672C2.82678 8.66826 2.87505 8.78482 2.96098 8.87077C3.04693 8.95669 3.16348 9.00496 3.28502 9.00496C3.40655 9.00496 3.52311 8.95669 3.60906 8.87077L5.71098 6.76885L7.81289 8.87077C7.89884 8.95669 8.0154 9.00496 8.13693 9.00496C8.25847 9.00496 8.37503 8.95669 8.46098 8.87077C8.5469 8.78482 8.59517 8.66826 8.59517 8.54672C8.59517 8.42519 8.5469 8.30863 8.46098 8.22268L6.35906 6.12077L8.46098 4.01885C8.5469 3.9329 8.59517 3.81634 8.59517 3.69481C8.59517 3.57327 8.5469 3.45672 8.46098 3.37077Z"
-                                    fill="#F51F45" />
-                            </svg>
-                        </div>
-                        <div class="task-details-content-tag blue">
-                            <p>Tag</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"
-                                fill="none">
-                                <path
-                                    d="M8.46098 3.37077C8.37503 3.28484 8.25847 3.23657 8.13693 3.23657C8.0154 3.23657 7.89884 3.28484 7.81289 3.37077L5.71098 5.47268L3.60906 3.37077C3.52311 3.28484 3.40655 3.23657 3.28502 3.23657C3.16348 3.23657 3.04693 3.28484 2.96098 3.37077C2.87505 3.45672 2.82678 3.57327 2.82678 3.69481C2.82678 3.81634 2.87505 3.9329 2.96098 4.01885L5.06289 6.12077L2.96098 8.22268C2.87505 8.30863 2.82678 8.42519 2.82678 8.54672C2.82678 8.66826 2.87505 8.78482 2.96098 8.87077C3.04693 8.95669 3.16348 9.00496 3.28502 9.00496C3.40655 9.00496 3.52311 8.95669 3.60906 8.87077L5.71098 6.76885L7.81289 8.87077C7.89884 8.95669 8.0154 9.00496 8.13693 9.00496C8.25847 9.00496 8.37503 8.95669 8.46098 8.87077C8.5469 8.78482 8.59517 8.66826 8.59517 8.54672C8.59517 8.42519 8.5469 8.30863 8.46098 8.22268L6.35906 6.12077L8.46098 4.01885C8.5469 3.9329 8.59517 3.81634 8.59517 3.69481C8.59517 3.57327 8.5469 3.45672 8.46098 3.37077Z"
-                                    fill="#F51F45" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="task-details-activity">
-                    <div class="task-details-activity-top">
-                        <p>Activity</p>
-                        <p>Haythem Ferjaoui create this task</p>
-                    </div>
-                    <div class="task-details-activity-bottom">
-                        <input type="text" placeholder="Comment" class="comment-input" />
-                        <button class="comment-button">Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 

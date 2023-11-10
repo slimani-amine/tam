@@ -46,6 +46,62 @@ export const getTasks = async (projectId) => {
     console.log(error);
   }
 };
+export const getTask = async (Id) => {
+  try {
+    const res = await fetch(
+      `http://localhost:1337/api/tasks/${Id}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to getTasks ");
+    }
+    const { data } = await res.json();
+    if (data.attributes) {
+      return data.attributes;
+    }
+    console.log(data.attributes.tasks.data, "tasks");
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const changeTask = async (taskId, newStatus) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const lastTask = await getTask(taskId);
+    console.log("Existing task:", lastTask);
+
+    const updatedTask = {
+      id: lastTask.id,
+      title: lastTask.title,
+      createdAt: lastTask.createdAt,
+      publishedAt: lastTask.publishedAt,
+      updatedAt: lastTask.updatedAt,
+      description: lastTask.description,
+      priority: lastTask.priority,
+      status: newStatus
+    };
+    console.log("Updated Task:", updatedTask)
+    const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({
+        data: updatedTask
+      }),
+    });
+    const data = await res.json()
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 const submitNewProject = async function (newProjectData) {
   try {
     const jwtToken = localStorage.getItem("token");

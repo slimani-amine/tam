@@ -371,14 +371,16 @@ const createBoardHtml = (task) => {
 const createDivForLists = (task) => {
   const divList = document.createElement('div');
   divList.classList.add("task");
-  divList.classList.add(`data-task-id="${task.id}"`);
+  divList.classList.add(`${task.id}`);
+  divList.setAttribute('data-task-id', `${task.id}`);
+
   divList.setAttribute('draggable', 'true');
   return divList
 }
 const createDivForColumns = (task) => {
   const divColumn = document.createElement('div');
   divColumn.classList.add("column-task");
-  divColumn.classList.add(`data-task-id="${task.id}"`);
+  divColumn.setAttribute('data-task-id', `${task.id}`);
   divColumn.setAttribute('draggable', 'true');
   return divColumn
 }
@@ -444,8 +446,6 @@ const renderTasks = (tasks) => {
       completedBord.appendChild(divCol);
       divCol.innerHTML = boardHtml;
     }
-    // const taskId = task.getAttribute("data-task-id");
-
   });
 
 };

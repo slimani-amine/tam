@@ -7,6 +7,15 @@ import {
 } from "./model.js";
 import renderTasks from "./Views/renderTasks.js";
 import { dragAndDrop } from "./Views/dragAndDrop.js"
+import { taskDetail } from "./Views/taskDetails.js"
+const taskNumber = {
+  newRequest: 0,
+  inProgress: 0,
+  toBeTested: 0,
+  completed: 0
+}
+
+import { countTasksStatus } from "./Views/countTasksStatus.js"
 const token = localStorage.getItem("token");
 if (!token) {
   window.location.assign("./auth/login.html");
@@ -101,7 +110,7 @@ if (!token) {
       </defs>
     </svg>
     <span>+</span>
-      </div>`;
+        </div>`;
         allProjectContents.insertAdjacentHTML("afterbegin", html);
         const dropdownContent = document.querySelectorAll(".dropdown-content");
         let previousContent = null;
@@ -123,6 +132,7 @@ if (!token) {
             const projectId = content.getAttribute("data-project-id");
             selectedProjectId = projectId
             const tasks = await getTasks(projectId);
+
             if (!tasks) {
               noTasks.style.display = "block";
               lists.style.display = "none";
@@ -136,20 +146,66 @@ if (!token) {
               }
 
             }
-
+            //numbers of tasks :
+            const taskNumbers = await countTasksStatus(tasks, taskNumber)
+            const newRequestNumber = document.querySelector("#new-requestNumber")
+            const inprogressNumber = document.querySelector("#in-progressNumber")
+            const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+            const completedNumber = document.querySelector("#completedNumber")
+            newRequestNumber.innerHTML = taskNumbers.newRequest
+            inprogressNumber.innerHTML = taskNumbers.inProgress
+            tobetestedNumber.innerHTML = taskNumbers.toBeTested
+            completedNumber.innerHTML = taskNumbers.completed
             renderTasks(tasks);
+
             //  task detalis
             const taskList = document.querySelectorAll(".task");
+            const columnTask = document.querySelectorAll(".column-task");
             const taskDetails = document.querySelector(".task-details");
-            const closeTaskDetails = document.querySelector(".closeTask-details");
-            taskList.forEach((e) => {
-              e.addEventListener("click", () => {
-                taskDetails.style.display = "block";
-              });
-            });
 
-            closeTaskDetails.addEventListener("click", () => {
-              taskDetails.style.display = "none";
+            taskList.forEach((e) => {
+              e.addEventListener("click", async () => {
+                const taskId = e.getAttribute('data-task-id');
+                const html = await taskDetail(taskId)
+                taskDetails.style.display = "block";
+                const div = document.createElement('div');
+                div.classList.add("modalTask-details");
+                taskDetails.appendChild(div);
+                div.innerHTML = html;
+                const closeTaskDetails = document.querySelector(".closeTask-details");
+                closeTaskDetails.addEventListener("click", () => {
+                  taskDetails.style.display = "none";
+                });
+              });
+
+            });
+            columnTask.forEach((e) => {
+              e.addEventListener("click", async () => {
+                const taskId = e.getAttribute('data-task-id');
+                const html = await taskDetail(taskId)
+                taskDetails.style.display = "block";
+                const div = document.createElement('div');
+                div.classList.add("modalTask-details");
+                taskDetails.appendChild(div);
+                div.innerHTML = html;
+                const closeTaskDetails = document.querySelector(".closeTask-details");
+                closeTaskDetails.addEventListener("click", () => {
+                  taskDetails.style.display = "none";
+                });
+              });
+
+            });
+            const dropdownTrigger = document.querySelector('.dropdown-trigger');
+            const dropdownContent = document.querySelector('.dropdown-content');
+
+
+
+
+            document.addEventListener('click', function (event) {
+              if (!dropdownTrigger.contains(event.target) && !dropdownContent.contains(event.target)) {
+                dropdownContent.style.display = 'none';
+                dropdownContent.innerHTML = '';
+              }
             });
 
             //drag and drop
@@ -279,7 +335,6 @@ if (!token) {
 
           });
         });
-
 
       });
 
@@ -465,6 +520,7 @@ if (!token) {
   closeAddTask.addEventListener("click", () => {
     addTask.style.display = "none";
   });
+
   const addTaskForm = document.querySelector(".addTaskForm");
   addTaskForm.addEventListener("submit", async (e) => {
     try {
@@ -473,11 +529,34 @@ if (!token) {
       const descOfTask = document.querySelector("#descOfTask").value;
       const statusOfTask = document.querySelector(".addTask-select").value;
       await pushNewTask({ title: nameOfTask, description: descOfTask, status: statusOfTask }, selectedProjectId);
-      location.reload();
-
+      const tasks = await getTasks(selectedProjectId);
+      renderTasks(tasks);
+      addTask.style.display = "none";
+      const taskNumbers = await countTasksStatus(tasks, taskNumber)
+      const newRequestNumber = document.querySelector("#new-requestNumber")
+      const inprogressNumber = document.querySelector("#in-progressNumber")
+      const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+      const completedNumber = document.querySelector("#completedNumber")
+      newRequestNumber.innerHTML = taskNumbers.newRequest
+      inprogressNumber.innerHTML = taskNumbers.inProgress
+      tobetestedNumber.innerHTML = taskNumbers.toBeTested
+      completedNumber.innerHTML = taskNumbers.completed
     } catch (error) {
       console.log(error, "something wrong !");
     }
   });
+
+  // dropdownTrigger.addEventListener('click', function (event) {
+  //   if (dropdownContent.style.display === 'none' || dropdownContent.style.display === '') {
+  //     dropdownContent.style.display = 'block';
+
+  //     dropdownContent.innerHTML = '<ul><li>Option 1</li><li>Option 2</li><li>Option 3</li></ul>';
+  //   } else {
+  //     dropdownContent.style.display = 'none';
+  //     dropdownContent.innerHTML = ''; 
+  //   }
+
+  //   event.stopPropagation();
+  // });
 
 }
