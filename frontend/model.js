@@ -1,4 +1,5 @@
 const userId = localStorage.getItem("userId");
+
 export const getProjects = async () => {
   try {
     const res = await fetch(
@@ -95,6 +96,22 @@ export const changeTask = async (taskId, newStatus, newFlag) => {
       body: JSON.stringify({
         data: updatedTask
       }),
+    });
+    const data = await res.json()
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const deleteTask = async (taskId) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
     });
     const data = await res.json()
     return data;

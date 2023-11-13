@@ -1,20 +1,13 @@
 import { changeTask, getTasks } from "../model.js"
-
+import { countTasksStatus } from "./countTasksStatus.js"
 const taskNumber = {
   newRequest: 0,
   inProgress: 0,
   toBeTested: 0,
   completed: 0
 }
-
-import { countTasksStatus } from "./countTasksStatus.js"
-
 let taskId = 0
 const id = JSON.parse(localStorage.getItem('projectId'))
-const getData = async () => {
-  const tasksdata = await getTasks(id)
-  return tasksdata
-}
 
 const insertAboveTask = (zone, mouseY) => {
   const els = zone.querySelectorAll(".task:not(.is-dragging)");
@@ -35,7 +28,6 @@ const insertAboveTask = (zone, mouseY) => {
 };
 
 export const dragAndDrop = (draggables, draggables2, droppables, droppables2) => {
-
   draggables.forEach((task) => {
     taskId = task.getAttribute('data-task-id');
 
@@ -106,7 +98,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
       }
 
       status && taskId && await changeTask(taskId, status)
-      const tasks = await getData()
+      const tasks = await getTasks(id)
       const taskNumbers = await countTasksStatus(tasks, taskNumber)
       const newRequestNumber = document.querySelector("#new-requestNumber")
       const inprogressNumber = document.querySelector("#in-progressNumber")
