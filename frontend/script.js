@@ -4,6 +4,7 @@ import {
   getTasks,
   pushNewProject,
   pushNewTask,
+  changeTask
 } from "./model.js";
 import renderTasks from "./Views/renderTasks.js";
 import { dragAndDrop } from "./Views/dragAndDrop.js"
@@ -92,6 +93,15 @@ if (!token) {
 
             const projectId = content.getAttribute("data-project-id");
             selectedProjectId = projectId
+
+            localStorage.setItem('projectId', JSON.stringify(projectId))
+            const id = JSON.parse(localStorage.getItem('projectId'))
+            if (id) {
+              localStorage.removeItem('projectId')
+              localStorage.setItem('projectId', JSON.stringify(projectId))
+            } else {
+              localStorage.setItem('projectId', JSON.stringify(projectId))
+            }
             const tasks = await getTasks(projectId);
 
             if (!tasks) {
@@ -120,13 +130,13 @@ if (!token) {
             renderTasks(tasks);
 
             //  task detalis
-            const taskList = document.querySelectorAll(".task");
+            const taskTitle = document.querySelectorAll(".task-title");
             const columnTask = document.querySelectorAll(".column-task");
             const taskDetails = document.querySelector(".task-details");
 
-            taskList.forEach((e) => {
+            taskTitle.forEach((e) => {
               e.addEventListener("click", async () => {
-                const taskId = e.getAttribute('data-task-id');
+                const taskId = e.parentElement.parentElement.getAttribute('data-task-id');
                 const html = await taskDetail(taskId)
                 taskDetails.style.display = "block";
                 const div = document.createElement('div');
@@ -154,19 +164,6 @@ if (!token) {
                   taskDetails.style.display = "none";
                 });
               });
-
-            });
-            const dropdownTrigger = document.querySelector('.dropdown-trigger');
-            const dropdownContent = document.querySelector('.dropdown-content');
-
-
-
-
-            document.addEventListener('click', function (event) {
-              if (!dropdownTrigger.contains(event.target) && !dropdownContent.contains(event.target)) {
-                dropdownContent.style.display = 'none';
-                dropdownContent.innerHTML = '';
-              }
             });
 
             //drag and drop
@@ -178,135 +175,94 @@ if (!token) {
             dragAndDrop(draggables, draggables2, droppables, droppables2)
 
             //priority flags
+
             const flags = document.querySelectorAll(".priority-flag");
 
             flags.forEach((flag) => {
-              const html = `<div class="flags">
-            <ul style="background-color: #fff">
-              <li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="18"
-                  viewBox="0 0 16 18"
-                  fill="none"
-                >
-                  <path
-                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-                    fill="#F04438"
-                  />
-                  <path
-                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-                    stroke="#F04438"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                Urgent
-              </li>
-              <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="18"
-                  viewBox="0 0 16 18"
-                  fill="none"
-                >
-                  <path
-                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-                    fill="#0BA5EC"
-                  />
-                  <path
-                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-                    stroke="#0BA5EC"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                Normal
-              </li>
-              <li  style="display: flex; justify-content: space-between ;gap:5px;">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="18"
-                  viewBox="0 0 16 18"
-                  fill="none"
-                >
-                  <path
-                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-                    fill="#FFB700"
-                  />
-                  <path
-                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-                    stroke="#FFB700"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                High
-              </li>
-              <li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="18"
-                  viewBox="0 0 16 18"
-                  fill="none"
-                >
-                  <path
-                    d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
-                    fill="#B8B6B6"
-                  />
-                  <path
-                    d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
-                    stroke="#B8B6B6"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                Low
-              </li>
-            </ul>
-            </div>`;
-              let isFlagOpen = false;
-              let flagContainer = null;
+              const taskId = flag.parentElement.parentElement.getAttribute('data-task-id')
               flag.addEventListener("click", (event) => {
-                event.stopPropagation();
+                let html = `
+    <ul class="flag-list" style=" background-color: #fff">
+<li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+  <path
+      d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+      fill="#F04438" />
+  <path
+      d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+      stroke="#F04438" stroke-linecap="round" />
+</svg>
+urgent
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+  <path
+      d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+      fill="#0BA5EC" />
+  <path
+      d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+      stroke="#0BA5EC" stroke-linecap="round" />
+</svg>
+normal
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ;gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+  <path
+      d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+      fill="#FFB700" />
+  <path
+      d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+      stroke="#FFB700" stroke-linecap="round" />
+</svg>
+high
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+  <path
+      d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+      fill="#B8B6B6" />
+  <path
+      d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+      stroke="#B8B6B6" stroke-linecap="round" />
+</svg>
+low
+</li>
+</ul>
+  `
+                const container = document.createElement('div');
+                container.innerHTML = html;
 
-                if (!isFlagOpen) {
-                  flag.insertAdjacentHTML("afterend", html);
-                  isFlagOpen = true;
-                  flagContainer = flag.nextElementSibling;
-                } else {
-                  flagContainer.style.display = "none";
-                  isFlagOpen = false;
-                  flagContainer = null;
-                }
-              });
-              const flagLi = document.querySelectorAll('.flagLi')
-              flagLi.forEach((e,i)=>{
-                e.addEventListener('click',()=>{
-                  if (i===0) {
-                    flag.classList.add('priority-flag-red')
-                  }else if (i===1) {
-                    flag.classList.add('priority-flag-blue')
-                  }else if (i===2) {
-                    flag.classList.add('priority-flag-yellow')
-                  }
-                  else if (i===3) {
-                    flag.classList.add('priority-flag-gray')
-                  }
-                })
-              })
-              document.addEventListener("click", (event) => {
-                if (
-                  isFlagOpen &&
-                  flagContainer &&
-                  !flagContainer.contains(event.target)
-                ) {
-                  flagContainer.style.display = "none";
-                  isFlagOpen = false;
-                  flagContainer = null;
-                }
+                const listItems = container.querySelectorAll(".flagLi");
+                listItems.forEach((item) => {
+                  console.log(item);
+                  item.addEventListener("click", async (event) => {
+                    const newFlag = item.textContent.trim();
+                    console.log(taskId,status);
+                    const change = await changeTask(taskId,null,newFlag)
+                   
+                    const tasks = await getTasks(selectedProjectId);
+                    renderTasks(tasks);
+
+                  });
+                });
+
+                const flagsList = flag.nextElementSibling;
+                flagsList.appendChild(container);
               });
             });
+
+            document.addEventListener('click', (event) => {
+              const isClickInsideFlagList = event.target.closest('.flag-list');
+              const isClickInsideFlag = event.target.closest('.priority-flag');
+
+              if (!isClickInsideFlagList && !isClickInsideFlag) {
+                const allFlagLists = document.querySelectorAll('.flag-list');
+                allFlagLists.forEach((list) => {
+                  list.style.display = 'none';
+                });
+              }
+            });
+
 
           });
         });
@@ -327,7 +283,10 @@ if (!token) {
         }
       });
     });
+
+
   });
+
 
   // tasks
 
@@ -361,7 +320,7 @@ if (!token) {
   });
 
 
-  //sidebar +get user projects
+  //sidebar 
   withoutSideBar.addEventListener("click", () => {
     sidebar.style.display = "none";
   });
@@ -533,5 +492,6 @@ if (!token) {
 
   //   event.stopPropagation();
   // });
+
 
 }

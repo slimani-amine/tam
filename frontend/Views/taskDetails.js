@@ -1,7 +1,17 @@
 import { getTask } from "../model.js"
 export const taskDetail = async (id) => {
     const taskData = await getTask(id)
-    console.log(taskData);
+
+    let flagClass = '';
+    if (taskData.flag === 'urgent') {
+        flagClass = 'priority-flag-red';
+      } else if (taskData.flag === 'normal') {
+        flagClass = 'priority-flag-blue';
+      } else if (taskData.flag === 'high') {
+        flagClass = 'priority-flag-yellow';
+      } else if (taskData.flag === 'low') {
+        flagClass = 'priority-flag-gray';
+      }
     return `
             <div class="task-details-header">
                 <p>Project Name > Sub Project</p>
@@ -44,18 +54,15 @@ export const taskDetail = async (id) => {
                             </svg>
                         </div>
                         <img src="public/icons/Avatar group (1).png" alt="" />
-                        <div class="task-details-content-header-priorityflag">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="19" viewBox="0 0 17 19"
-                                fill="none">
-                                <path
-                                    d="M1.56458 1.20874V11.6373H14.2994C14.8345 11.6373 15.102 11.6373 15.1645 11.4792C15.227 11.3211 15.0317 11.1382 14.6413 10.7724L10.0429 6.46495C9.89682 6.32813 9.82379 6.25972 9.82379 6.17303C9.82379 6.08633 9.89682 6.01792 10.0429 5.8811L14.6413 1.57365C15.0317 1.20786 15.227 1.02497 15.1645 0.866853C15.102 0.70874 14.8345 0.70874 14.2994 0.70874H2.06458C1.82887 0.70874 1.71102 0.70874 1.6378 0.781964C1.56458 0.855187 1.56458 0.973038 1.56458 1.20874Z"
-                                    fill="#FFB700" />
-                                <path
-                                    d="M1.56458 11.6373V1.20874C1.56458 0.973038 1.56458 0.855187 1.6378 0.781964C1.71102 0.70874 1.82887 0.70874 2.06458 0.70874H14.2994C14.8345 0.70874 15.102 0.70874 15.1645 0.866853C15.227 1.02497 15.0317 1.20786 14.6413 1.57365L10.0429 5.8811C9.89682 6.01792 9.82379 6.08633 9.82379 6.17303C9.82379 6.25972 9.89682 6.32813 10.0429 6.46495L14.6413 10.7724C15.0317 11.1382 15.227 11.3211 15.1645 11.4792C15.102 11.6373 14.8345 11.6373 14.2994 11.6373H1.56458ZM1.56458 11.6373V17.7087"
-                                    stroke="#FFB700" stroke-linecap="round" />
-                            </svg>
-                            <p>high</p>
+
+                            <div class="task-details-content-header-priorityflag ">
+                        <svg class="priority-flag ${flagClass}" style="width: 17" height="19" xmlns="http://www.w3.org/2000/svg" width="17" height="18" viewBox="0 0 17 18" fill="none">
+                        <path d="M1.25 11.4286V1C1.25 0.764298 1.25 0.646447 1.32322 0.573223C1.39645 0.5 1.5143 0.5 1.75 0.5H13.9849C14.5199 0.5 14.7874 0.5 14.8499 0.658113C14.9124 0.816226 14.7172 0.99912 14.3267 1.36491L9.72831 5.67236C9.58225 5.80918 9.50922 5.87759 9.50922 5.96429C9.50922 6.05098 9.58225 6.11939 9.72831 6.25621L14.3267 10.5637C14.7172 10.9295 14.9124 11.1123 14.8499 11.2705C14.7874 11.4286 14.5199 11.4286 13.9849 11.4286H1.25ZM1.25 11.4286V17.5" stroke="#AFAFAF" stroke-linecap="round"/>
+                      </svg>
+                            
+                            <p>${taskData.flag}</p>
                         </div>
+
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none">

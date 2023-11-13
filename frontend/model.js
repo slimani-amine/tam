@@ -1,5 +1,4 @@
 const userId = localStorage.getItem("userId");
-
 export const getProjects = async () => {
   try {
     const res = await fetch(
@@ -69,7 +68,7 @@ export const getTask = async (Id) => {
     console.log(error);
   }
 };
-export const changeTask = async (taskId, newStatus) => {
+export const changeTask = async (taskId, newStatus, newFlag) => {
   try {
     const jwtToken = localStorage.getItem("token");
     const lastTask = await getTask(taskId);
@@ -78,12 +77,13 @@ export const changeTask = async (taskId, newStatus) => {
     const updatedTask = {
       id: lastTask.id,
       title: lastTask.title,
+      flag: newFlag ? newFlag : lastTask.flag,
       createdAt: lastTask.createdAt,
       publishedAt: lastTask.publishedAt,
       updatedAt: lastTask.updatedAt,
       description: lastTask.description,
       priority: lastTask.priority,
-      status: newStatus
+      status: newStatus ? newStatus : lastTask.status
     };
     console.log("Updated Task:", updatedTask)
     const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
@@ -156,8 +156,6 @@ export const pushNewProject = async function (newProjectData) {
     console.error(err);
   }
 };
-
-
 const submitNewTask = async function (newTaskData) {
   try {
     const jwtToken = localStorage.getItem("token");
@@ -211,4 +209,4 @@ export const pushNewTask = async function (newTaskData, projectId = 1) {
   } catch (err) {
     console.log(err);
   }
-};
+};  

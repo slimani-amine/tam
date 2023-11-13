@@ -1,5 +1,20 @@
-import { changeTask } from "../model.js"
+import { changeTask, getTasks } from "../model.js"
+
+const taskNumber = {
+  newRequest: 0,
+  inProgress: 0,
+  toBeTested: 0,
+  completed: 0
+}
+
+import { countTasksStatus } from "./countTasksStatus.js"
+
 let taskId = 0
+const id = JSON.parse(localStorage.getItem('projectId'))
+const getData = async () => {
+  const tasksdata = await getTasks(id)
+  return tasksdata
+}
 
 const insertAboveTask = (zone, mouseY) => {
   const els = zone.querySelectorAll(".task:not(.is-dragging)");
@@ -23,7 +38,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
 
   draggables.forEach((task) => {
     taskId = task.getAttribute('data-task-id');
-    console.log(taskId, "taskid");
+
     task.addEventListener("dragstart", () => {
       task.classList.add("is-dragging");
     });
@@ -53,7 +68,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
       } else if (selected === "column4") {
         status = "completed"
       }
-      console.log(status, taskId);
+
       status && taskId && await changeTask(taskId, status)
 
       const bottomTask = insertAboveTask(zone, e.clientY);
@@ -70,6 +85,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
     zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".list").getAttribute("id")
+
       let status = ""
       if (selected === "list1") {
         status = "new request"
@@ -88,9 +104,19 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
       } else {
         zone.insertBefore(curTask, bottomTask);
       }
-      console.log(status, taskId);
+
       status && taskId && await changeTask(taskId, status)
+      const tasks = await getData()
+      const taskNumbers = await countTasksStatus(tasks, taskNumber)
+      const newRequestNumber = document.querySelector("#new-requestNumber")
+      const inprogressNumber = document.querySelector("#in-progressNumber")
+      const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+      const completedNumber = document.querySelector("#completedNumber")
+      newRequestNumber.innerHTML = taskNumbers.newRequest
+      inprogressNumber.innerHTML = taskNumbers.inProgress
+      tobetestedNumber.innerHTML = taskNumbers.toBeTested
+      completedNumber.innerHTML = taskNumbers.completed
     });
-  }); 
+  });
 }
 
