@@ -1,4 +1,26 @@
 const userId = localStorage.getItem("userId");
+export const getUser = async (Id) => {
+  try {
+    const res = await fetch(
+      `http://localhost:1337/api/users/${Id}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to getUser ");
+    }
+    const data  = await res.json();
+    if (data) {
+      return data
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const getProjects = async () => {
   try {
     const res = await fetch(

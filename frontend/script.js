@@ -1,5 +1,6 @@
 import * as model from "./auth/model.js";
 import {
+  getUser,
   getProjects,
   getTasks,
   pushNewProject,
@@ -7,7 +8,6 @@ import {
   changeTask,
   deleteTask,
   getProject,
-
 } from "./model.js";
 import renderTasks from "./Views/renderTasks.js";
 import { dragAndDrop } from "./Views/dragAndDrop.js"
@@ -46,8 +46,13 @@ if (!token) {
       timeline.style.display = "none";
       noTasks.style.display = "block";
     }
+    // avatar 
+    const userId = localStorage.getItem("userId");
+    const userData = await getUser(userId)
+    const avatar = document.querySelector("#avatar-img")
+    avatar.setAttribute("src", `http://localhost:1337${userData.avatar.url}`)
 
-
+    // render projects 
     const listItems = document.querySelectorAll(".list2");
     const dropdown1 = document.querySelectorAll(".dropdown1");
     const dropdown2 = document.querySelectorAll(".dropdown2");
@@ -123,7 +128,7 @@ if (!token) {
               localStorage.setItem('projectId', JSON.stringify(projectId))
             }
             const tasks = await getTasks(projectId);
-
+            console.log(tasks);
             if (!tasks) {
               noTasks.style.display = "block";
               lists.style.display = "none";
@@ -320,10 +325,8 @@ low
                         colorClass = 'priority-flag-gray'
                       }
                       let lastcolorClass = lastFlag.children[0].getAttribute('class').split(" ")[1]
-
                       lastFlag.children[0].classList.remove(lastcolorClass)
                       lastFlag.children[0].classList.add(colorClass)
-
                     });
                   });
 
@@ -351,7 +354,6 @@ low
                   try {
                     e.preventDefault()
                     const newComment = await changeTask(taskId, null, null, comment.value)
-
                   } catch (error) {
                     console.log(error, "something wrong !");
                   }
@@ -375,10 +377,16 @@ low
                   let html = `
       <ul class="other-list">
   <li class="deleteButton" >
-  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="10" height="100" viewBox="0 0 24 24">
-  <path d="M 10 2 L 9 3 L 3 3 L 3 5 L 4.109375 5 L 5.8925781 20.255859 L 5.8925781 20.263672 C 6.023602 21.250335 6.8803207 22 7.875 22 L 16.123047 22 C 17.117726 22 17.974445 21.250322 18.105469 20.263672 L 18.107422 20.255859 L 19.890625 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 6.125 5 L 17.875 5 L 16.123047 20 L 7.875 20 L 6.125 5 z"></path>
-  </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+  <path d="M14 4.98669C13.9867 4.98669 13.9667 4.98669 13.9467 4.98669C10.42 4.63336 6.9 4.50002 3.41333 4.85336L2.05333 4.98669C1.77333 5.01336 1.52667 4.81336 1.5 4.53336C1.47333 4.25336 1.67333 4.01336 1.94667 3.98669L3.30667 3.85336C6.85333 3.49336 10.4467 3.63336 14.0467 3.98669C14.32 4.01336 14.52 4.26002 14.4933 4.53336C14.4733 4.79336 14.2533 4.98669 14 4.98669Z" fill="#944242"/>
+  <path d="M5.66667 4.31337C5.64 4.31337 5.61333 4.31337 5.58 4.30671C5.31333 4.26004 5.12667 4.00004 5.17333 3.73337L5.32 2.86004C5.42667 2.22004 5.57333 1.33337 7.12667 1.33337H8.87333C10.4333 1.33337 10.58 2.25337 10.68 2.86671L10.8267 3.73337C10.8733 4.00671 10.6867 4.26671 10.42 4.30671C10.1467 4.35337 9.88667 4.16671 9.84667 3.90004L9.7 3.03337C9.60667 2.45337 9.58667 2.34004 8.88 2.34004H7.13333C6.42667 2.34004 6.41333 2.43337 6.31333 3.02671L6.16 3.89337C6.12 4.14004 5.90667 4.31337 5.66667 4.31337Z" fill="#944242"/>
+  <path d="M10.14 15.6667H5.86C3.53333 15.6667 3.44 14.3801 3.36667 13.3401L2.93333 6.62672C2.91333 6.35338 3.12667 6.11338 3.4 6.09338C3.68 6.08005 3.91333 6.28672 3.93333 6.56005L4.36667 13.2734C4.44 14.2867 4.46667 14.6667 5.86 14.6667H10.14C11.54 14.6667 11.5667 14.2867 11.6333 13.2734L12.0667 6.56005C12.0867 6.28672 12.3267 6.08005 12.6 6.09338C12.8733 6.11338 13.0867 6.34672 13.0667 6.62672L12.6333 13.3401C12.56 14.3801 12.4667 15.6667 10.14 15.6667Z" fill="#944242"/>
+  <path d="M9.10667 12H6.88667C6.61333 12 6.38667 11.7733 6.38667 11.5C6.38667 11.2267 6.61333 11 6.88667 11H9.10667C9.38 11 9.60667 11.2267 9.60667 11.5C9.60667 11.7733 9.38 12 9.10667 12Z" fill="#944242"/>
+  <path d="M9.66667 9.33337H6.33333C6.06 9.33337 5.83333 9.10671 5.83333 8.83337C5.83333 8.56004 6.06 8.33337 6.33333 8.33337H9.66667C9.94 8.33337 10.1667 8.56004 10.1667 8.83337C10.1667 9.10671 9.94 9.33337 9.66667 9.33337Z" fill="#944242"/>
+</svg>
+<p style="color:red;">
   Delete
+  </p>
   </li>
 
   </ul>

@@ -456,6 +456,11 @@ export interface ApiTaskTask extends Schema.CollectionType {
       'oneToMany',
       'api::comment.comment'
     >;
+    users_permissions_users: Attribute.Relation<
+      'api::task.task',
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -725,6 +730,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::project.project'
     >;
+    avatar: Attribute.Media;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

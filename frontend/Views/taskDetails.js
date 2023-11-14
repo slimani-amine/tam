@@ -67,6 +67,9 @@ export const taskDetail = async (id, projectId) => {
                         </div>
                         
                         <img src="public/icons/Avatar group (1).png" alt="" />
+                        <div class="assignee-lists">
+
+                        </div>
 
                             <div class="task-details-content-header-priorityflag ">
                         <svg class="priority-flag ${flagClass}" style="width: 17" height="19" xmlns="http://www.w3.org/2000/svg" width="17" height="18" viewBox="0 0 17 18" fill="none">
@@ -75,9 +78,7 @@ export const taskDetail = async (id, projectId) => {
                             
                             <p>${taskData.flag}</p>
                         </div>
-                        <div class="flags-list">
-   </div>
-
+                        <div class="flags-list"></div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none">
@@ -177,7 +178,7 @@ export const taskDetail = async (id, projectId) => {
                     <path d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z" fill="#FFA948"/>
                   </svg> comments :<br/>    
                     ${taskData.comments.data && taskData.comments.data.map((e) => {
-        return   `${e.attributes.description} <br/>  `
+        return `${e.attributes.description} <br/>  `
     })
 
         }

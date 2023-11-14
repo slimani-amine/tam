@@ -58,6 +58,11 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::comment.comment"
+    },
+    "users_permissions_users": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
