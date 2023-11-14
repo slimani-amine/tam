@@ -5,7 +5,9 @@ import {
   pushNewProject,
   pushNewTask,
   changeTask,
-  deleteTask
+  deleteTask,
+  getProject,
+
 } from "./model.js";
 import renderTasks from "./Views/renderTasks.js";
 import { dragAndDrop } from "./Views/dragAndDrop.js"
@@ -18,8 +20,6 @@ const taskNumber = {
 }
 import { countTasksStatus } from "./Views/countTasksStatus.js"
 const token = localStorage.getItem("token");
-
-
 
 if (!token) {
   window.location.assign("./auth/login.html");
@@ -46,6 +46,7 @@ if (!token) {
       timeline.style.display = "none";
       noTasks.style.display = "block";
     }
+
 
     const listItems = document.querySelectorAll(".list2");
     const dropdown1 = document.querySelectorAll(".dropdown1");
@@ -136,6 +137,10 @@ if (!token) {
               }
 
             }
+            // project name
+            const selectedProject = await getProject(selectedProjectId)
+            const projectName = document.querySelector('.projectName')
+            projectName.innerHTML = selectedProject.Name
             //numbers of tasks :
             const taskNumbers = await countTasksStatus(tasks, taskNumber)
             const newRequestNumber = document.querySelector("#new-requestNumber")
@@ -150,12 +155,11 @@ if (!token) {
 
             //  task detalis
             const taskTitle = document.querySelectorAll(".task-title");
-            const columnTask = document.querySelectorAll(".column-task");
             const taskDetails = document.querySelector(".task-details");
             taskTitle.forEach((e) => {
               e.addEventListener("click", async () => {
                 const taskId = e.parentElement.parentElement.getAttribute('data-task-id');
-                const html = await taskDetail(taskId)
+                const html = await taskDetail(taskId, selectedProjectId)
                 taskDetails.style.display = "block";
                 const div = document.createElement('div');
                 div.classList.add("modalTask-details");
@@ -165,75 +169,87 @@ if (!token) {
                 closeTaskDetails.addEventListener("click", () => {
                   taskDetails.style.display = "none";
                 });
-              });
 
-            });
+                // Task details operations 
+                // status
+                const taskDetailsStatus = document.querySelector(".dropdown-trigger");
+                taskDetailsStatus && taskDetailsStatus.addEventListener('click', () => {
+                  let hrml = `<ul class="status-list">
+              <li class="statusLi" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+  <circle cx="6" cy="6.5" r="6" fill="#C5C5C5"/>
+</svg>
+              new request
+              </li>
+              <li class="statusLi" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+              <circle cx="6" cy="6.5" r="6" fill="#FFA948"/>
+            </svg>
+              in progress
+              </li>
+              <li class="statusLi" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+              <circle cx="6" cy="6.5" r="6" fill="#0BA5EC"/>
+            </svg>
+              to be tested
+              </li>
+              <li class="statusLi" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+              <circle cx="6" cy="6.5" r="6" fill="#3DD455"/>
+            </svg>
+              completed
+              </li>
+              </ul>`
 
+                  const container = document.createElement('div');
+                  container.innerHTML = hrml;
 
-            //drag and drop
-            const draggables = document.querySelectorAll(".column-task");
-            const draggables2 = document.querySelectorAll(".task");
-            const droppables = document.querySelectorAll(".column");
-            const droppables2 = document.querySelectorAll(".list");
+                  const statusLi = container.querySelectorAll(".statusLi");
+                  statusLi.forEach((item) => {
+                    item.addEventListener("click", async (event) => {
+                      const newStatus = item.textContent.trim();
+                      const change = await changeTask(taskId, newStatus, null)
+                      renderTasks(tasks);
+                      let lastStatus = item.parentElement.parentElement.parentElement.parentElement
 
-            dragAndDrop(draggables, draggables2, droppables, droppables2)
+                      lastStatus.children[1].innerHTML = newStatus
 
-            //delete task
-            const otherPoint = document.querySelectorAll(".otherPoint");
-            otherPoint.forEach((e) => {
-              const taskId = e.parentElement.parentElement.getAttribute('data-task-id')
-              e.addEventListener("click", (event) => {
-                let html = `
-      <ul class="other-list">
-  <li class="deleteButton" style="display: flex;justify-content: space-between;gap: 5px;align-items: center;">
-  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="10" height="100" viewBox="0 0 24 24">
-  <path d="M 10 2 L 9 3 L 3 3 L 3 5 L 4.109375 5 L 5.8925781 20.255859 L 5.8925781 20.263672 C 6.023602 21.250335 6.8803207 22 7.875 22 L 16.123047 22 C 17.117726 22 17.974445 21.250322 18.105469 20.263672 L 18.107422 20.255859 L 19.890625 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 6.125 5 L 17.875 5 L 16.123047 20 L 7.875 20 L 6.125 5 z"></path>
-  </svg>
-  Delete
-  </li>
-  </ul>
-    `
-                const container = document.createElement('div');
-                container.innerHTML = html;
+                      let colorClass = ""
+                      if (newStatus === 'new request') {
+                        colorClass = 'gray'
+                      } else if (newStatus === 'in progress') {
+                        colorClass = 'orange'
+                      } else if (newStatus === 'to be tested') {
+                        colorClass = 'blue'
+                      } else if (newStatus === 'completed') {
+                        colorClass = 'green'
+                      }
+                      let lastcolorClass = lastStatus.getAttribute('class').split(" ")[1]
 
-                const deleteButton = container.querySelector(".deleteButton");
+                      lastStatus.classList.remove(lastcolorClass)
+                      lastStatus.classList.add(colorClass)
 
-                deleteButton.addEventListener("click", async (event) => {
-                  const deleteTaskRes = await deleteTask(taskId)
-                  const tasks = await getTasks(selectedProjectId);
-                  const taskNumbers = await countTasksStatus(tasks, taskNumber)
-                  const newRequestNumber = document.querySelector("#new-requestNumber")
-                  const inprogressNumber = document.querySelector("#in-progressNumber")
-                  const tobetestedNumber = document.querySelector("#to-be-testedNumber")
-                  const completedNumber = document.querySelector("#completedNumber")
-                  newRequestNumber.innerHTML = taskNumbers.newRequest
-                  inprogressNumber.innerHTML = taskNumbers.inProgress
-                  tobetestedNumber.innerHTML = taskNumbers.toBeTested
-                  completedNumber.innerHTML = taskNumbers.completed
-                  renderTasks(tasks);
+                    });
+                  });
+
+                  const statusList = document.querySelector('.status-lists')
+                  statusList.appendChild(container);
+                })
+                document.addEventListener('click', (event) => {
+                  const isClickInsideOtherList = event.target.closest('.statusLi');
+                  const isClickInsideOther = event.target.closest('.dropdown-trigger');
+                  if (!isClickInsideOtherList && !isClickInsideOther) {
+                    const allOtherLists = document.querySelectorAll('.statusLi');
+                    allOtherLists.forEach((list) => {
+                      list.style.display = 'none';
+                    });
+                  }
                 });
 
-                const others = e.nextElementSibling;
-                others.appendChild(container);
-              });
-            });
-            document.addEventListener('click', (event) => {
-              const isClickInsideOtherList = event.target.closest('.other-list');
-              const isClickInsideOther = event.target.closest('.otherPoint');
-              if (!isClickInsideOtherList && !isClickInsideOther) {
-                const allOtherLists = document.querySelectorAll('.other-list');
-                allOtherLists.forEach((list) => {
-                  list.style.display = 'none';
-                });
-              }
-            });
-
-            //priority flags
-            const flags = document.querySelectorAll(".priority-flag");
-            flags.forEach((flag) => {
-              const taskId = flag.parentElement.parentElement.getAttribute('data-task-id')
-              flag.addEventListener("click", (event) => {
-                let html = `
+                // flag
+                const flag = document.querySelector(".task-details-content-header-priorityflag");
+                flag.addEventListener("click", (event) => {
+                  let html = `
 <ul class="flag-list" style=" background-color: #fff">
 <li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
@@ -281,58 +297,226 @@ low
 </li>
 </ul>
 `
-                const container = document.createElement('div');
-                container.innerHTML = html;
+                  const container = document.createElement('div');
+                  container.innerHTML = html;
 
-                const listItems = container.querySelectorAll(".flagLi");
-                listItems.forEach((item) => {
-                  console.log(item);
-                  item.addEventListener("click", async (event) => {
-                    const newFlag = item.textContent.trim();
-                    const change = await changeTask(taskId, null, newFlag)
+                  const listItems = container.querySelectorAll(".flagLi");
+                  listItems.forEach((item) => {
+                    item.addEventListener("click", async (event) => {
+                      const newFlag = item.textContent.trim();
+                      const change = await changeTask(taskId, null, newFlag)
+                      const tasks = await getTasks(selectedProjectId);
+                      renderTasks(tasks);
+                      let lastFlag = item.parentElement.parentElement.parentElement.parentElement.children[2]
+                      lastFlag.children[1].innerHTML = newFlag
+                      let colorClass = ""
+                      if (newFlag === 'urgent') {
+                        colorClass = 'priority-flag-red'
+                      } else if (newFlag === 'normal') {
+                        colorClass = 'priority-flag-blue'
+                      } else if (newFlag === 'high') {
+                        colorClass = 'priority-flag-yellow'
+                      } else if (newFlag === 'low') {
+                        colorClass = 'priority-flag-gray'
+                      }
+                      let lastcolorClass = lastFlag.children[0].getAttribute('class').split(" ")[1]
+
+                      lastFlag.children[0].classList.remove(lastcolorClass)
+                      lastFlag.children[0].classList.add(colorClass)
+
+                    });
+                  });
+
+                  const flagsList = flag.nextElementSibling;
+                  flagsList.appendChild(container);
+                });
+
+                document.addEventListener('click', (event) => {
+                  const isClickInsideFlagList = event.target.closest('.flag-list');
+                  const isClickInsideFlag = event.target.closest('.priority-flag');
+
+                  if (!isClickInsideFlagList && !isClickInsideFlag) {
+                    const allFlagLists = document.querySelectorAll('.flag-list');
+                    allFlagLists.forEach((list) => {
+                      list.style.display = 'none';
+                    });
+                  }
+                });
+
+
+                //add comment
+                const comment = document.querySelector('.comment-input')
+                const commentBtn = document.querySelector('.comment-button')
+                commentBtn && commentBtn.addEventListener('click', async (e) => {
+                  try {
+                    e.preventDefault()
+                    const newComment = await changeTask(taskId, null, null, comment.value)
+
+                  } catch (error) {
+                    console.log(error, "something wrong !");
+                  }
+                })
+
+              });
+
+              //drag and drop
+              const draggables = document.querySelectorAll(".column-task");
+              const draggables2 = document.querySelectorAll(".task");
+              const droppables = document.querySelectorAll(".column");
+              const droppables2 = document.querySelectorAll(".list");
+
+              dragAndDrop(draggables, draggables2, droppables, droppables2)
+
+              //delete task
+              const otherPoint = document.querySelectorAll(".otherPoint");
+              otherPoint.forEach((e) => {
+                const taskId = e.parentElement.parentElement.getAttribute('data-task-id')
+                e.addEventListener("click", (event) => {
+                  let html = `
+      <ul class="other-list">
+  <li class="deleteButton" >
+  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="10" height="100" viewBox="0 0 24 24">
+  <path d="M 10 2 L 9 3 L 3 3 L 3 5 L 4.109375 5 L 5.8925781 20.255859 L 5.8925781 20.263672 C 6.023602 21.250335 6.8803207 22 7.875 22 L 16.123047 22 C 17.117726 22 17.974445 21.250322 18.105469 20.263672 L 18.107422 20.255859 L 19.890625 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 6.125 5 L 17.875 5 L 16.123047 20 L 7.875 20 L 6.125 5 z"></path>
+  </svg>
+  Delete
+  </li>
+
+  </ul>
+    `
+                  const container = document.createElement('div');
+                  container.innerHTML = html;
+
+                  const deleteButton = container.querySelector(".deleteButton");
+
+                  deleteButton.addEventListener("click", async (event) => {
+                    const deleteTaskRes = await deleteTask(taskId)
                     const tasks = await getTasks(selectedProjectId);
+                    const taskNumbers = await countTasksStatus(tasks, taskNumber)
+                    const newRequestNumber = document.querySelector("#new-requestNumber")
+                    const inprogressNumber = document.querySelector("#in-progressNumber")
+                    const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+                    const completedNumber = document.querySelector("#completedNumber")
+                    newRequestNumber.innerHTML = taskNumbers.newRequest
+                    inprogressNumber.innerHTML = taskNumbers.inProgress
+                    tobetestedNumber.innerHTML = taskNumbers.toBeTested
+                    completedNumber.innerHTML = taskNumbers.completed
                     renderTasks(tasks);
                   });
-                });
 
-                const flagsList = flag.nextElementSibling;
-                flagsList.appendChild(container);
+                  const others = e.nextElementSibling;
+                  others.appendChild(container);
+                });
+              });
+              document.addEventListener('click', (event) => {
+                const isClickInsideOtherList = event.target.closest('.other-list');
+                const isClickInsideOther = event.target.closest('.otherPoint');
+                if (!isClickInsideOtherList && !isClickInsideOther) {
+                  const allOtherLists = document.querySelectorAll('.other-list');
+                  allOtherLists.forEach((list) => {
+                    list.style.display = 'none';
+                  });
+                }
+              });
+
+              //priority flags
+              const flags = document.querySelectorAll(".priority-flag");
+              flags.forEach((flag) => {
+                const taskId = flag.parentElement.parentElement.getAttribute('data-task-id')
+                flag.addEventListener("click", (event) => {
+                  let html = `
+<ul class="flag-list" style=" background-color: #fff">
+<li class="flagLi" style="display: flex; justify-content: space-between; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+<path
+d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+fill="#F04438" />
+<path
+d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+stroke="#F04438" stroke-linecap="round" />
+</svg>
+urgent
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+<path
+d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+fill="#0BA5EC" />
+<path
+d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+stroke="#0BA5EC" stroke-linecap="round" />
+</svg>
+normal
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ;gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+<path
+d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+fill="#FFB700" />
+<path
+d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+stroke="#FFB700" stroke-linecap="round" />
+</svg>
+high
+</li>
+<li class="flagLi" style="display: flex; justify-content: space-between ; gap:5px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+<path
+d="M1 1V11.4286H13.7349C14.2699 11.4286 14.5374 11.4286 14.5999 11.2705C14.6624 11.1123 14.4672 10.9295 14.0767 10.5637L9.47831 6.25621C9.33225 6.11939 9.25922 6.05098 9.25922 5.96429C9.25922 5.87759 9.33225 5.80918 9.47831 5.67236L14.0767 1.36491C14.4672 0.99912 14.6624 0.816226 14.5999 0.658113C14.5374 0.5 14.2699 0.5 13.7349 0.5H1.5C1.2643 0.5 1.14645 0.5 1.07322 0.573223C1 0.646447 1 0.764298 1 1Z"
+fill="#B8B6B6" />
+<path
+d="M1 11.4286V1C1 0.764298 1 0.646447 1.07322 0.573223C1.14645 0.5 1.2643 0.5 1.5 0.5H13.7349C14.2699 0.5 14.5374 0.5 14.5999 0.658113C14.6624 0.816226 14.4672 0.99912 14.0767 1.36491L9.47831 5.67236C9.33225 5.80918 9.25922 5.87759 9.25922 5.96429C9.25922 6.05098 9.33225 6.11939 9.47831 6.25621L14.0767 10.5637C14.4672 10.9295 14.6624 11.1123 14.5999 11.2705C14.5374 11.4286 14.2699 11.4286 13.7349 11.4286H1ZM1 11.4286V17.5"
+stroke="#B8B6B6" stroke-linecap="round" />
+</svg>
+low
+</li>
+</ul>
+`
+                  const container = document.createElement('div');
+                  container.innerHTML = html;
+                  const listItems = container.querySelectorAll(".flagLi");
+                  listItems.forEach((item) => {
+                    item.addEventListener("click", async (event) => {
+                      const newFlag = item.textContent.trim();
+                      const change = await changeTask(taskId, null, newFlag)
+                      const tasks = await getTasks(selectedProjectId);
+                      renderTasks(tasks);
+                    });
+                  });
+                  const flagsList = flag.nextElementSibling;
+                  flagsList.appendChild(container);
+                });
+              });
+              document.addEventListener('click', (event) => {
+                const isClickInsideFlagList = event.target.closest('.flag-list');
+                const isClickInsideFlag = event.target.closest('.priority-flag');
+
+                if (!isClickInsideFlagList && !isClickInsideFlag) {
+                  const allFlagLists = document.querySelectorAll('.flag-list');
+                  allFlagLists.forEach((list) => {
+                    list.style.display = 'none';
+                  });
+                }
               });
             });
-            document.addEventListener('click', (event) => {
-              const isClickInsideFlagList = event.target.closest('.flag-list');
-              const isClickInsideFlag = event.target.closest('.priority-flag');
-
-              if (!isClickInsideFlagList && !isClickInsideFlag) {
-                const allFlagLists = document.querySelectorAll('.flag-list');
-                allFlagLists.forEach((list) => {
-                  list.style.display = 'none';
-                });
-              }
-            });
-
           });
         });
 
+        listItems.forEach((item, i) => {
+          item.addEventListener("click", function () {
+            this.classList.toggle("active");
+            if (this.classList.contains("active")) {
+              dropdown1[i].style.display = "none";
+              dropdown2[i].style.display = "block";
+              dropdownContents[i].style.display = "block";
+            } else {
+              dropdown1[i].style.display = "block";
+              dropdown2[i].style.display = "none";
+              dropdownContents[i].style.display = "none";
+            }
+          });
+        });
       });
-
-    listItems.forEach((item, i) => {
-      item.addEventListener("click", function () {
-        this.classList.toggle("active");
-        if (this.classList.contains("active")) {
-          dropdown1[i].style.display = "none";
-          dropdown2[i].style.display = "block";
-          dropdownContents[i].style.display = "block";
-        } else {
-          dropdown1[i].style.display = "block";
-          dropdown2[i].style.display = "none";
-          dropdownContents[i].style.display = "none";
-        }
-      });
-    });
-
   });
-
   // tasks
   listItems.forEach((item) => {
     item.addEventListener("click", () => {
@@ -411,44 +595,42 @@ low
   });
 
   // avatar and logout
-  document.addEventListener("DOMContentLoaded", function () {
-    const avatarImg = document.getElementById("avatar-img");
-    const avatarDropdown = document.getElementById("avatar-dropdown");
-    const logoutButton = document.getElementById("logout-button");
 
-    avatarImg.addEventListener("click", function (e) {
-      e.stopPropagation();
-      toggleDropdown();
-    });
+  const avatarImg = document.getElementById("avatar-img");
+  const avatarDropdown = document.getElementById("avatar-dropdown");
+  const logoutButton = document.getElementById("logout-button");
 
-    document.addEventListener("click", function () {
-      hideDropdown();
-    });
-
-    avatarDropdown.addEventListener("click", function (e) {
-      e.stopPropagation();
-    });
-
-    logoutButton.addEventListener("click", function () {
-      model.logout();
-      hideDropdown();
-    });
-
-    function toggleDropdown() {
-      const dropdown = avatarDropdown.querySelector("ul");
-      if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-      } else {
-        dropdown.style.display = "block";
-      }
-    }
-
-    function hideDropdown() {
-      const dropdown = avatarDropdown.querySelector("ul");
-      dropdown.style.display = "none";
-    }
+  avatarImg.addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleDropdown();
   });
 
+  document.addEventListener("click", function () {
+    hideDropdown();
+  });
+
+  avatarDropdown.addEventListener("click", function (e) {
+    e.stopPropagation();
+  });
+
+  logoutButton.addEventListener("click", function () {
+    model.logout();
+    hideDropdown();
+  });
+
+  function toggleDropdown() {
+    const dropdown = avatarDropdown.querySelector("ul");
+    if (dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+    } else {
+      dropdown.style.display = "block";
+    }
+  }
+
+  function hideDropdown() {
+    const dropdown = avatarDropdown.querySelector("ul");
+    dropdown.style.display = "none";
+  }
   //add project
   const newProject = document.querySelector(".new-project");
   const addProject = document.querySelector(".addProject");
@@ -470,7 +652,6 @@ low
     } catch (error) {
       console.error(error, "something wrong!");
     }
-
   });
 
   //add task
@@ -520,5 +701,4 @@ low
       console.log(error, "something wrong !");
     }
   });
-
 }

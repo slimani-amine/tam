@@ -1,5 +1,4 @@
 const userId = localStorage.getItem("userId");
-
 export const getProjects = async () => {
   try {
     const res = await fetch(
@@ -18,7 +17,28 @@ export const getProjects = async () => {
     if (data.projects) {
       return data.projects;
     }
-    console.log(data.projects, "projects");
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getProject = async (Id) => {
+  try {
+    const res = await fetch(
+      `http://localhost:1337/api/projects/${Id}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to getProject ");
+    }
+    const { data } = await res.json();
+    if (data.attributes) {
+      return data.attributes;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -41,7 +61,6 @@ export const getTasks = async (projectId) => {
     if (data.attributes) {
       return data.attributes.tasks.data;
     }
-    console.log(data.attributes.tasks.data, "tasks");
   } catch (error) {
     console.log(error);
   }
@@ -64,16 +83,18 @@ export const getTask = async (Id) => {
     if (data.attributes) {
       return data.attributes;
     }
-    console.log(data.attributes.tasks.data, "tasks");
   } catch (error) {
     console.log(error);
   }
 };
-export const changeTask = async (taskId, newStatus, newFlag) => {
+export const changeTask = async (taskId, newStatus, newFlag, newCommenct) => {
   try {
     const jwtToken = localStorage.getItem("token");
+    let updatedComment = ""
+    if (newCommenct) {
+      updatedComment = await pushNewComment(taskId, newCommenct)
+    }
     const lastTask = await getTask(taskId);
-    console.log("Existing task:", lastTask);
 
     const updatedTask = {
       id: lastTask.id,
@@ -84,9 +105,9 @@ export const changeTask = async (taskId, newStatus, newFlag) => {
       updatedAt: lastTask.updatedAt,
       description: lastTask.description,
       priority: lastTask.priority,
-      status: newStatus ? newStatus : lastTask.status
+      status: newStatus ? newStatus : lastTask.status,
+      comments: { data: updatedComment ? updatedComment : lastTask.comments.data }
     };
-    console.log("Updated Task:", updatedTask)
     const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
@@ -119,6 +140,67 @@ export const deleteTask = async (taskId) => {
     console.log(err);
   }
 }
+export const getComments = async (taskId) => {
+  try {
+    const res = await fetch(
+      `http://localhost:1337/api/tasks/${taskId}?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to getComment ");
+    }
+    const { data } = await res.json();
+    if (data.attributes) {
+      return data.attributes.comments.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const addComment = async (newComment) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+
+    const res = await fetch(`http://localhost:1337/api/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ data: { description: newComment } })
+    });
+    const data = await res.json()
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const pushNewComment = async (taskId, newCommentData) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const newComment = await addComment(newCommentData);
+
+    const lastComments = await getComments(taskId);
+
+    const updatedComment = lastComments.concat(
+      {
+        id: newComment.id,
+        createdAt: newComment.data.attributes.createdAt,
+        publishedAt: newComment.data.attributes.publishedAt,
+        updatedAt: newComment.data.attributes.updatedAt,
+        description: newComment.data.attributes.description,
+      });
+
+    return updatedComment
+  } catch (err) {
+    console.log(err);
+  }
+}
 const submitNewProject = async function (newProjectData) {
   try {
     const jwtToken = localStorage.getItem("token");
@@ -141,10 +223,8 @@ export const pushNewProject = async function (newProjectData) {
     const jwtToken = localStorage.getItem("token");
 
     const newProject = await submitNewProject(newProjectData, userId);
-    console.log("New Project:", newProject);
 
     const lastProjects = await getProjects(userId);
-    console.log("Existing Projects:", lastProjects);
 
     const updatedProjects = lastProjects.concat({
       id: newProject.id,
@@ -154,7 +234,6 @@ export const pushNewProject = async function (newProjectData) {
       updatedAt: newProject.attributes.updatedAt,
       url: newProject.attributes.url
     });
-    console.log("Updated Projects:", updatedProjects);
 
     const res = await fetch(`http://localhost:1337/api/users/${userId}`, {
       method: "PUT",
@@ -194,10 +273,8 @@ export const pushNewTask = async function (newTaskData, projectId = 1) {
   try {
     const jwtToken = localStorage.getItem("token");
     const newTask = await submitNewTask(newTaskData);
-    console.log("New tasks:", newTask);
 
     const lastTasks = await getTasks(projectId);
-    console.log("Existing tasks:", lastTasks);
 
     const updatedTask = lastTasks.concat(
       {
@@ -210,7 +287,7 @@ export const pushNewTask = async function (newTaskData, projectId = 1) {
         priority: newTask.attributes.priority,
         status: newTask.attributes.status
       });
-    console.log("Updated Task:", updatedTask)
+    
     const res = await fetch(`http://localhost:1337/api/projects/${projectId}`, {
       method: "PUT",
       headers: {

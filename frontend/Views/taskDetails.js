@@ -1,20 +1,31 @@
-import { getTask } from "../model.js"
-export const taskDetail = async (id) => {
+import { getProject, getTask } from "../model.js"
+export const taskDetail = async (id, projectId) => {
     const taskData = await getTask(id)
 
+    const projectData = await getProject(projectId)
     let flagClass = '';
     if (taskData.flag === 'urgent') {
         flagClass = 'priority-flag-red';
-      } else if (taskData.flag === 'normal') {
+    } else if (taskData.flag === 'normal') {
         flagClass = 'priority-flag-blue';
-      } else if (taskData.flag === 'high') {
+    } else if (taskData.flag === 'high') {
         flagClass = 'priority-flag-yellow';
-      } else if (taskData.flag === 'low') {
+    } else if (taskData.flag === 'low') {
         flagClass = 'priority-flag-gray';
-      }
+    }
+    let colorClass = ""
+    if (taskData.status === 'new request') {
+        colorClass = 'gray'
+    } else if (taskData.status === 'in progress') {
+        colorClass = 'orange'
+    } else if (taskData.status === 'to be tested') {
+        colorClass = 'blue'
+    } else if (taskData.status === 'completed') {
+        colorClass = 'green'
+    }
     return `
             <div class="task-details-header">
-                <p>Project Name > Sub Project</p>
+                <p>${projectData.Name}</p>
                 <div style="display: flex" class="task-details-header-right">
                     <p style="color: #949494; font-size: 1rem">Créé le  ${taskData.createdAt.substring(0, 10)}</p>
                     <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
@@ -41,18 +52,20 @@ export const taskDetail = async (id) => {
             <div class="task-details-bigcontent">
                 <div class="task-details-content">
                     <div class="task-details-content-header">
-                        <div class="task-details-content-header-status">
+                        <div class="task-details-content-header-status ${colorClass}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13"
-                                fill="none">
-                                <circle cx="6.56458" cy="6.20874" r="6" fill="#FFA948" />
+                                fill="${colorClass}">
+                                <circle cx="6.56458" cy="6.20874" r="6" fill="${colorClass}" />
                             </svg>
-                            <p>In Progress</p>
+                            <p>${taskData.status}</p>
                             <svg class="dropdown-trigger" xmlns="http://www.w3.org/2000/svg" width="9" height="7" viewBox="0 0 9 7" fill="none">
                                 <path
                                     d="M4.75663 5.97827L8.47112 1.52089C8.90534 0.999826 8.53481 0.20874 7.85654 0.20874L1.27261 0.20874C0.594338 0.20874 0.223813 0.999825 0.658031 1.52089L4.37252 5.97827C4.47247 6.09821 4.65668 6.09821 4.75663 5.97827Z"
-                                    fill="#FFA948" />
+                                    fill="${colorClass}" />
                             </svg>
+                            <div class="status-lists"></div>
                         </div>
+                        
                         <img src="public/icons/Avatar group (1).png" alt="" />
 
                             <div class="task-details-content-header-priorityflag ">
@@ -62,6 +75,8 @@ export const taskDetail = async (id) => {
                             
                             <p>${taskData.flag}</p>
                         </div>
+                        <div class="flags-list">
+   </div>
 
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -158,6 +173,15 @@ export const taskDetail = async (id) => {
                       <svg xmlns="http://www.w3.org/2000/svg" width="5" height="9" viewBox="0 0 5 9" fill="none">
                       <path d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z" fill="#FFA948"/>
                     </svg> description : ${taskData.description} </p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="5" height="9" viewBox="0 0 5 9" fill="none">
+                    <path d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z" fill="#FFA948"/>
+                  </svg> comments :<br/>    
+                    ${taskData.comments.data && taskData.comments.data.map((e) => {
+        return   `${e.attributes.description} <br/>  `
+    })
+
+        }
+                    
                     </div>
                     <div class="task-details-activity-bottom">
                         <input type="text" placeholder="Comment" class="comment-input" />

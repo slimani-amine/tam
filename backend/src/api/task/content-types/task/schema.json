@@ -53,6 +53,11 @@
         "low"
       ],
       "default": "empty"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment"
     }
   }
 }

@@ -212,6 +212,7 @@ svg:hover {
   margin-top: -1.4rem;
   justify-content: space-between;
 }
+
 .drop-content {
   display: flex;
   align-items: center;
@@ -260,8 +261,9 @@ svg:hover {
   display: flex;
   align-items: center;
   margin-top: 1%;
-  gap: 65%;
-  margin-left: 2%;
+  margin-left: 1.5%;
+  justify-content: space-between;
+  width: 75%;
 }
 
 #main {
@@ -272,9 +274,10 @@ svg:hover {
 .navbar {
   display: flex;
   align-items: center;
-  gap: 54%;
+  width: 75%;
   margin-left: 1.5%;
   border-top: solid 1px rgb(216, 216, 216);
+  justify-content: space-between;
 }
 
 .navbar-content {
@@ -433,22 +436,26 @@ svg:hover {
 
 .green {
   background: #daffe0;
-  color: green;
+
+  fill: green;
 }
 
 .blue {
   background: #e1f4fd;
-  color: #1b69fd;
+
+  fill: #1b69fd;
+
 }
 
 .orange {
   background: #ffe9d1;
-  color: orange;
+  fill: orange;
 }
 
 .grey {
   background: #efefef;
-  color: gray;
+
+  fill: gray;
 }
 
 .list-title span {
@@ -727,8 +734,8 @@ svg:hover {
   align-items: center;
   gap: 10px;
   border-radius: 8px;
-  background: #ffe9d1;
   height: 25px;
+  position: relative;
 }
 
 .task-details-content-header {
@@ -898,11 +905,46 @@ svg:hover {
   fill: gray;
 }
 
-.flags-list{
+.otherParams,
+.flags-list {
   z-index: 2;
   display: inline-flex;
-padding: 9px;
-flex-direction: column;
-align-items: flex-start;
-gap: 8px;
+  padding: 9px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+}
+
+.other-list,
+.flag-list {
+  position: absolute;
+  top: 0;
+  left: -100px
+}
+
+.status-list {
+  display: flex;
+  width: 90px;
+  flex-direction: column;
+  box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.34);
+  position: absolute;
+  top: 5;
+  left: 0;
+  background-color: #fff;
+}
+
+.status-list li,
+.other-list li {
+  display: flex;
+  padding: 4px 0px;
+  align-items: center;
+  gap: 10px;
+  margin-left: -25%;
+  height: 17px;
+}
+
+.status-list li:hover,
+.other-list li:hover {
+  background: #FAEEFF;
 }
