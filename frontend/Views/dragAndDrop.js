@@ -1,14 +1,9 @@
 import { changeTask, getTasks } from "../model.js"
 import { countTasksStatus } from "./countTasksStatus.js"
-const taskNumber = {
-  newRequest: 0,
-  inProgress: 0,
-  toBeTested: 0,
-  completed: 0
-}
+
 let taskId = 0
 const id = JSON.parse(localStorage.getItem('projectId'))
-
+let status = ""
 const insertAboveTask = (zone, mouseY) => {
   const els = zone.querySelectorAll(".task:not(.is-dragging)");
 
@@ -27,10 +22,9 @@ const insertAboveTask = (zone, mouseY) => {
   return closestTask;
 };
 
-export const dragAndDrop = (draggables, draggables2, droppables, droppables2) => {
+export const dragAndDrop = async (draggables, draggables2, droppables, droppables2) => {
   draggables.forEach((task) => {
     taskId = task.getAttribute('data-task-id');
-
     task.addEventListener("dragstart", () => {
       task.classList.add("is-dragging");
     });
@@ -50,7 +44,6 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
     zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".column").getAttribute("id")
-      let status = ""
       if (selected === "column1") {
         status = "new request"
       } else if (selected === "column2") {
@@ -62,7 +55,6 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
       }
 
       status && taskId && await changeTask(taskId, status)
-
       const bottomTask = insertAboveTask(zone, e.clientY);
       const curTask = document.querySelector(".is-dragging");
 
@@ -73,7 +65,7 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
       }
     });
   });
-  droppables2.forEach((zone) => {
+  droppables2.forEach(async (zone) => {
     zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".list").getAttribute("id")
@@ -97,18 +89,27 @@ export const dragAndDrop = (draggables, draggables2, droppables, droppables2) =>
         zone.insertBefore(curTask, bottomTask);
       }
 
-      status && taskId && await changeTask(taskId, status)
-      const tasks = await getTasks(id)
-      const taskNumbers = await countTasksStatus(tasks, taskNumber)
-      const newRequestNumber = document.querySelector("#new-requestNumber")
-      const inprogressNumber = document.querySelector("#in-progressNumber")
-      const tobetestedNumber = document.querySelector("#to-be-testedNumber")
-      const completedNumber = document.querySelector("#completedNumber")
-      newRequestNumber.innerHTML = taskNumbers.newRequest
-      inprogressNumber.innerHTML = taskNumbers.inProgress
-      tobetestedNumber.innerHTML = taskNumbers.toBeTested
-      completedNumber.innerHTML = taskNumbers.completed
+      if (status !== "" && taskId !== 0 ) {
+        const changed = await changeTask(taskId, status)
+        if (changed) {
+          const tasks = await getTasks(id)
+          if (tasks) {
+            const taskNumbers = countTasksStatus(tasks)
+            const newRequestNumber = document.querySelector("#new-requestNumber")
+            const inprogressNumber = document.querySelector("#in-progressNumber")
+            const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+            const completedNumber = document.querySelector("#completedNumber")
+            newRequestNumber.innerHTML = taskNumbers.newRequest
+            inprogressNumber.innerHTML = taskNumbers.inProgress
+            tobetestedNumber.innerHTML = taskNumbers.toBeTested
+            completedNumber.innerHTML = taskNumbers.completed
+          }
+        }
+      }
     });
+
   });
+
 }
+
 

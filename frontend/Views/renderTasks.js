@@ -1,9 +1,10 @@
+import { getTask, getUser } from "../model.js";
 import { translateDate } from "./translateDate.js"
 const clearElement = (element) => {
   element.innerHTML = "";
 };
 
-const createTaskHtml = (task, flagClass) => {
+const createTaskHtml = (task, flagClass, users) => {
   return `
   <div class="task-content">
     <svg
@@ -82,9 +83,16 @@ const createTaskHtml = (task, flagClass) => {
     <p class="task-title">${task.attributes.title}</p>
   </div>
   <div class="task-detail">
-    <img src="public/icons/Avatar group 2.png"/>
-    <p style="width: 18%;
-    margin-left: 17%;">${translateDate(task.attributes.createdAt)}</p>
+ <svg class="assignee-vide" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 18 18" fill="none">
+    <circle cx="9.25" cy="4.95837" r="3.75" stroke="#AFAFAF" stroke-linecap="round"/>
+    <path d="M1.86565 14.1261C2.53542 11.758 4.97413 10.625 7.43509 10.625H11.0649C13.5259 10.625 15.9646 11.758 16.6343 14.1261C16.7964 14.6992 16.9255 15.3281 16.9921 16.0014C17.0465 16.551 16.5939 17 16.0417 17H2.45833C1.90604 17 1.45351 16.551 1.50789 16.0014C1.57452 15.3281 1.70355 14.6992 1.86565 14.1261Z" stroke="#AFAFAF" stroke-linecap="round"/>
+  </svg>
+    
+  
+<div class="assignee-list-render">
+</div>
+    <p style="width: 25%;
+    margin-left: 27%;">${translateDate(task.attributes.createdAt)}</p>
     <svg class="priority-flag ${flagClass}" style="width: 50% " xmlns="http://www.w3.org/2000/svg" width="17" height="18" viewBox="0 0 17 18" fill="none">
   <path d="M1.25 11.4286V1C1.25 0.764298 1.25 0.646447 1.32322 0.573223C1.39645 0.5 1.5143 0.5 1.75 0.5H13.9849C14.5199 0.5 14.7874 0.5 14.8499 0.658113C14.9124 0.816226 14.7172 0.99912 14.3267 1.36491L9.72831 5.67236C9.58225 5.80918 9.50922 5.87759 9.50922 5.96429C9.50922 6.05098 9.58225 6.11939 9.72831 6.25621L14.3267 10.5637C14.7172 10.9295 14.9124 11.1123 14.8499 11.2705C14.7874 11.4286 14.5199 11.4286 13.9849 11.4286H1.25ZM1.25 11.4286V17.5" stroke="#AFAFAF" stroke-linecap="round"/>
 </svg>
@@ -231,7 +239,7 @@ const renderTasks = (tasks) => {
   clearElement(toBeTestedBord);
   clearElement(completedBord);
 
-  tasks && tasks.forEach((task) => {
+  tasks && tasks.forEach(async (task) => {
     let flagClass = '';
     if (task.attributes.flag === 'urgent') {
       flagClass = 'priority-flag-red';
@@ -243,7 +251,21 @@ const renderTasks = (tasks) => {
       flagClass = 'priority-flag-gray';
     }
 
-
+    // const assignee = await getTask(task.id)
+    // const assigneeData=assignee.users_permissions_users.data
+    // console.log(assigneeData);
+    // const getUsers = ()=>{
+    //   if (assigneeData) {
+    //     let users=[]
+    //     assigneeData.map(async (e)=>{
+    //       const user= await getUser(e.id)
+    //       users.push(user)
+    //     })
+    //     return users
+    //   }
+    // }
+    // let users=getUsers()
+    // console.log(users,"user");
     const listHtml = createTaskHtml(task, flagClass);
     const boardHtml = createBoardHtml(task, flagClass);
 

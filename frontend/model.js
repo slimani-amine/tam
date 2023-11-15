@@ -1,4 +1,26 @@
 const userId = localStorage.getItem("userId");
+export const getUsers = async (Id) => {
+  try {
+    const res = await fetch(
+      `http://localhost:1337/api/users?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to getUser ");
+    }
+    const data = await res.json();
+    if (data) {
+      return data
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const getUser = async (Id) => {
   try {
     const res = await fetch(
@@ -13,7 +35,7 @@ export const getUser = async (Id) => {
     if (!res.ok) {
       throw new Error("Failed to getUser ");
     }
-    const data  = await res.json();
+    const data = await res.json();
     if (data) {
       return data
     }
@@ -109,7 +131,7 @@ export const getTask = async (Id) => {
     console.log(error);
   }
 };
-export const changeTask = async (taskId, newStatus, newFlag, newCommenct) => {
+export const changeTask = async (taskId, newTitle,newDesc,newStatus, newFlag, newCommenct) => {
   try {
     const jwtToken = localStorage.getItem("token");
     let updatedComment = ""
@@ -117,19 +139,23 @@ export const changeTask = async (taskId, newStatus, newFlag, newCommenct) => {
       updatedComment = await pushNewComment(taskId, newCommenct)
     }
     const lastTask = await getTask(taskId);
+    console.log(lastTask,"last");
+    let updatedTask = undefined
+    if (lastTask) {
+      updatedTask = {
+        id: taskId,
+        title: newTitle ? newTitle :lastTask.title,
+        flag: newFlag ? newFlag : lastTask.flag,
+        createdAt: lastTask.createdAt,
+        publishedAt: lastTask.publishedAt,
+        updatedAt: lastTask.updatedAt,
+        description: newDesc ? newDesc : lastTask.description,
+        priority: lastTask.priority,
+        status: newStatus ? newStatus : lastTask.status,
+        comments: { data: updatedComment ? updatedComment : lastTask.comments.data }
+      };
+    }
 
-    const updatedTask = {
-      id: lastTask.id,
-      title: lastTask.title,
-      flag: newFlag ? newFlag : lastTask.flag,
-      createdAt: lastTask.createdAt,
-      publishedAt: lastTask.publishedAt,
-      updatedAt: lastTask.updatedAt,
-      description: lastTask.description,
-      priority: lastTask.priority,
-      status: newStatus ? newStatus : lastTask.status,
-      comments: { data: updatedComment ? updatedComment : lastTask.comments.data }
-    };
     const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
@@ -309,7 +335,7 @@ export const pushNewTask = async function (newTaskData, projectId = 1) {
         priority: newTask.attributes.priority,
         status: newTask.attributes.status
       });
-    
+
     const res = await fetch(`http://localhost:1337/api/projects/${projectId}`, {
       method: "PUT",
       headers: {

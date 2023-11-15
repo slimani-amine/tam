@@ -1,5 +1,6 @@
 import * as model from "./auth/model.js";
 import {
+  getUsers,
   getUser,
   getProjects,
   getTasks,
@@ -12,12 +13,7 @@ import {
 import renderTasks from "./Views/renderTasks.js";
 import { dragAndDrop } from "./Views/dragAndDrop.js"
 import { taskDetail } from "./Views/taskDetails.js"
-const taskNumber = {
-  newRequest: 0,
-  inProgress: 0,
-  toBeTested: 0,
-  completed: 0
-}
+
 import { countTasksStatus } from "./Views/countTasksStatus.js"
 const token = localStorage.getItem("token");
 
@@ -147,7 +143,7 @@ if (!token) {
             const projectName = document.querySelector('.projectName')
             projectName.innerHTML = selectedProject.Name
             //numbers of tasks :
-            const taskNumbers = await countTasksStatus(tasks, taskNumber)
+            const taskNumbers = await countTasksStatus(tasks)
             const newRequestNumber = document.querySelector("#new-requestNumber")
             const inprogressNumber = document.querySelector("#in-progressNumber")
             const tobetestedNumber = document.querySelector("#to-be-testedNumber")
@@ -157,6 +153,9 @@ if (!token) {
             tobetestedNumber.innerHTML = taskNumbers.toBeTested
             completedNumber.innerHTML = taskNumbers.completed
             renderTasks(tasks);
+
+
+
 
             //  task detalis
             const taskTitle = document.querySelectorAll(".task-title");
@@ -170,12 +169,28 @@ if (!token) {
                 div.classList.add("modalTask-details");
                 taskDetails.appendChild(div);
                 div.innerHTML = html;
-                const closeTaskDetails = document.querySelector(".closeTask-details");
-                closeTaskDetails.addEventListener("click", () => {
-                  taskDetails.style.display = "none";
-                });
+
 
                 // Task details operations 
+                let detailsData = {
+                  newTitle: "",
+                  newDesc: "",
+                  newStatus: "",
+                  newFlag: ""
+                }
+
+                // title
+                const title = document.querySelector('.task-details-content-title')
+                title.addEventListener("input", (e) => {
+                  detailsData.newTitle = e.target.value;
+                })
+
+                // description
+                const description = document.querySelector('.p-desc-detail')
+                description.addEventListener("input", (e) => {
+                  detailsData.newDesc = e.target.value;
+                })
+
                 // status
                 const taskDetailsStatus = document.querySelector(".dropdown-trigger");
                 taskDetailsStatus && taskDetailsStatus.addEventListener('click', () => {
@@ -212,25 +227,24 @@ if (!token) {
                   const statusLi = container.querySelectorAll(".statusLi");
                   statusLi.forEach((item) => {
                     item.addEventListener("click", async (event) => {
-                      const newStatus = item.textContent.trim();
-                      const change = await changeTask(taskId, newStatus, null)
-                      renderTasks(tasks);
+                      detailsData.newStatus = item.textContent.trim();
+
+
                       let lastStatus = item.parentElement.parentElement.parentElement.parentElement
 
-                      lastStatus.children[1].innerHTML = newStatus
+                      lastStatus.children[1].innerHTML = detailsData.newStatus
 
                       let colorClass = ""
-                      if (newStatus === 'new request') {
+                      if (detailsData.newStatus === 'new request') {
                         colorClass = 'gray'
-                      } else if (newStatus === 'in progress') {
+                      } else if (detailsData.newStatus === 'in progress') {
                         colorClass = 'orange'
-                      } else if (newStatus === 'to be tested') {
+                      } else if (detailsData.newStatus === 'to be tested') {
                         colorClass = 'blue'
-                      } else if (newStatus === 'completed') {
+                      } else if (detailsData.newStatus === 'completed') {
                         colorClass = 'green'
                       }
                       let lastcolorClass = lastStatus.getAttribute('class').split(" ")[1]
-
                       lastStatus.classList.remove(lastcolorClass)
                       lastStatus.classList.add(colorClass)
 
@@ -308,23 +322,22 @@ low
                   const listItems = container.querySelectorAll(".flagLi");
                   listItems.forEach((item) => {
                     item.addEventListener("click", async (event) => {
-                      const newFlag = item.textContent.trim();
-                      const change = await changeTask(taskId, null, newFlag)
-                      const tasks = await getTasks(selectedProjectId);
-                      renderTasks(tasks);
-                      let lastFlag = item.parentElement.parentElement.parentElement.parentElement.children[2]
-                      lastFlag.children[1].innerHTML = newFlag
+                      detailsData.newFlag = item.textContent.trim();
+                      let lastFlag = item.parentElement.parentElement.parentElement.parentElement.children[3]
+
+                      lastFlag.children[1].innerHTML = detailsData.newFlag
                       let colorClass = ""
-                      if (newFlag === 'urgent') {
+                      if (detailsData.newFlag === 'urgent') {
                         colorClass = 'priority-flag-red'
-                      } else if (newFlag === 'normal') {
+                      } else if (detailsData.newFlag === 'normal') {
                         colorClass = 'priority-flag-blue'
-                      } else if (newFlag === 'high') {
+                      } else if (detailsData.newFlag === 'high') {
                         colorClass = 'priority-flag-yellow'
-                      } else if (newFlag === 'low') {
+                      } else if (detailsData.newFlag === 'low') {
                         colorClass = 'priority-flag-gray'
                       }
                       let lastcolorClass = lastFlag.children[0].getAttribute('class').split(" ")[1]
+                      console.log(lastcolorClass, "lastcolorClass");
                       lastFlag.children[0].classList.remove(lastcolorClass)
                       lastFlag.children[0].classList.add(colorClass)
                     });
@@ -359,6 +372,27 @@ low
                   }
                 })
 
+                //close 
+                const closeTaskDetails = document.querySelector(".closeTask-details");
+                closeTaskDetails.addEventListener("click", async () => {
+                  const change = await changeTask(taskId, detailsData.newTitle, detailsData.newDesc, detailsData.newStatus, detailsData.newFlag, detailsData.newComment)
+                  const tasks = await getTasks(selectedProjectId);
+                  const taskNumbers = await countTasksStatus(tasks)
+                  const newRequestNumber = document.querySelector("#new-requestNumber")
+                  const inprogressNumber = document.querySelector("#in-progressNumber")
+                  const tobetestedNumber = document.querySelector("#to-be-testedNumber")
+                  const completedNumber = document.querySelector("#completedNumber")
+                  newRequestNumber.innerHTML = taskNumbers.newRequest
+                  inprogressNumber.innerHTML = taskNumbers.inProgress
+                  tobetestedNumber.innerHTML = taskNumbers.toBeTested
+                  completedNumber.innerHTML = taskNumbers.completed
+                  renderTasks(tasks)
+                  taskDetails.style.display = "none";
+                });
+
+
+
+
               });
 
               //drag and drop
@@ -375,21 +409,21 @@ low
                 const taskId = e.parentElement.parentElement.getAttribute('data-task-id')
                 e.addEventListener("click", (event) => {
                   let html = `
-      <ul class="other-list">
-  <li class="deleteButton" >
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-  <path d="M14 4.98669C13.9867 4.98669 13.9667 4.98669 13.9467 4.98669C10.42 4.63336 6.9 4.50002 3.41333 4.85336L2.05333 4.98669C1.77333 5.01336 1.52667 4.81336 1.5 4.53336C1.47333 4.25336 1.67333 4.01336 1.94667 3.98669L3.30667 3.85336C6.85333 3.49336 10.4467 3.63336 14.0467 3.98669C14.32 4.01336 14.52 4.26002 14.4933 4.53336C14.4733 4.79336 14.2533 4.98669 14 4.98669Z" fill="#944242"/>
-  <path d="M5.66667 4.31337C5.64 4.31337 5.61333 4.31337 5.58 4.30671C5.31333 4.26004 5.12667 4.00004 5.17333 3.73337L5.32 2.86004C5.42667 2.22004 5.57333 1.33337 7.12667 1.33337H8.87333C10.4333 1.33337 10.58 2.25337 10.68 2.86671L10.8267 3.73337C10.8733 4.00671 10.6867 4.26671 10.42 4.30671C10.1467 4.35337 9.88667 4.16671 9.84667 3.90004L9.7 3.03337C9.60667 2.45337 9.58667 2.34004 8.88 2.34004H7.13333C6.42667 2.34004 6.41333 2.43337 6.31333 3.02671L6.16 3.89337C6.12 4.14004 5.90667 4.31337 5.66667 4.31337Z" fill="#944242"/>
-  <path d="M10.14 15.6667H5.86C3.53333 15.6667 3.44 14.3801 3.36667 13.3401L2.93333 6.62672C2.91333 6.35338 3.12667 6.11338 3.4 6.09338C3.68 6.08005 3.91333 6.28672 3.93333 6.56005L4.36667 13.2734C4.44 14.2867 4.46667 14.6667 5.86 14.6667H10.14C11.54 14.6667 11.5667 14.2867 11.6333 13.2734L12.0667 6.56005C12.0867 6.28672 12.3267 6.08005 12.6 6.09338C12.8733 6.11338 13.0867 6.34672 13.0667 6.62672L12.6333 13.3401C12.56 14.3801 12.4667 15.6667 10.14 15.6667Z" fill="#944242"/>
-  <path d="M9.10667 12H6.88667C6.61333 12 6.38667 11.7733 6.38667 11.5C6.38667 11.2267 6.61333 11 6.88667 11H9.10667C9.38 11 9.60667 11.2267 9.60667 11.5C9.60667 11.7733 9.38 12 9.10667 12Z" fill="#944242"/>
-  <path d="M9.66667 9.33337H6.33333C6.06 9.33337 5.83333 9.10671 5.83333 8.83337C5.83333 8.56004 6.06 8.33337 6.33333 8.33337H9.66667C9.94 8.33337 10.1667 8.56004 10.1667 8.83337C10.1667 9.10671 9.94 9.33337 9.66667 9.33337Z" fill="#944242"/>
-</svg>
-<p style="color:red;">
-  Delete
-  </p>
-  </li>
+                        <ul class="other-list">
+                    <li class="deleteButton" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                    <path d="M14 4.98669C13.9867 4.98669 13.9667 4.98669 13.9467 4.98669C10.42 4.63336 6.9 4.50002 3.41333 4.85336L2.05333 4.98669C1.77333 5.01336 1.52667 4.81336 1.5 4.53336C1.47333 4.25336 1.67333 4.01336 1.94667 3.98669L3.30667 3.85336C6.85333 3.49336 10.4467 3.63336 14.0467 3.98669C14.32 4.01336 14.52 4.26002 14.4933 4.53336C14.4733 4.79336 14.2533 4.98669 14 4.98669Z" fill="#944242"/>
+                    <path d="M5.66667 4.31337C5.64 4.31337 5.61333 4.31337 5.58 4.30671C5.31333 4.26004 5.12667 4.00004 5.17333 3.73337L5.32 2.86004C5.42667 2.22004 5.57333 1.33337 7.12667 1.33337H8.87333C10.4333 1.33337 10.58 2.25337 10.68 2.86671L10.8267 3.73337C10.8733 4.00671 10.6867 4.26671 10.42 4.30671C10.1467 4.35337 9.88667 4.16671 9.84667 3.90004L9.7 3.03337C9.60667 2.45337 9.58667 2.34004 8.88 2.34004H7.13333C6.42667 2.34004 6.41333 2.43337 6.31333 3.02671L6.16 3.89337C6.12 4.14004 5.90667 4.31337 5.66667 4.31337Z" fill="#944242"/>
+                    <path d="M10.14 15.6667H5.86C3.53333 15.6667 3.44 14.3801 3.36667 13.3401L2.93333 6.62672C2.91333 6.35338 3.12667 6.11338 3.4 6.09338C3.68 6.08005 3.91333 6.28672 3.93333 6.56005L4.36667 13.2734C4.44 14.2867 4.46667 14.6667 5.86 14.6667H10.14C11.54 14.6667 11.5667 14.2867 11.6333 13.2734L12.0667 6.56005C12.0867 6.28672 12.3267 6.08005 12.6 6.09338C12.8733 6.11338 13.0867 6.34672 13.0667 6.62672L12.6333 13.3401C12.56 14.3801 12.4667 15.6667 10.14 15.6667Z" fill="#944242"/>
+                    <path d="M9.10667 12H6.88667C6.61333 12 6.38667 11.7733 6.38667 11.5C6.38667 11.2267 6.61333 11 6.88667 11H9.10667C9.38 11 9.60667 11.2267 9.60667 11.5C9.60667 11.7733 9.38 12 9.10667 12Z" fill="#944242"/>
+                    <path d="M9.66667 9.33337H6.33333C6.06 9.33337 5.83333 9.10671 5.83333 8.83337C5.83333 8.56004 6.06 8.33337 6.33333 8.33337H9.66667C9.94 8.33337 10.1667 8.56004 10.1667 8.83337C10.1667 9.10671 9.94 9.33337 9.66667 9.33337Z" fill="#944242"/>
+                  </svg>
+                  <p style="color:red;">
+                    Delete
+                    </p>
+                    </li>
 
-  </ul>
+                    </ul>
     `
                   const container = document.createElement('div');
                   container.innerHTML = html;
@@ -410,7 +444,6 @@ low
                     completedNumber.innerHTML = taskNumbers.completed
                     renderTasks(tasks);
                   });
-
                   const others = e.nextElementSibling;
                   others.appendChild(container);
                 });
@@ -505,6 +538,63 @@ low
                   });
                 }
               });
+
+              //assignee
+              //               const assignee = document.querySelectorAll(".assignee-vide");
+              //               assignee.forEach((e) => {
+              //                 e.addEventListener("click", async (event) => {
+              //                   const users = await getUsers()
+              //                   let html = `
+              //                   <div class="search-assignee">
+              //                   <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+              //                     <path d="M7.33333 14.3333C3.74667 14.3333 0.833333 11.42 0.833333 7.83331C0.833333 4.24665 3.74667 1.33331 7.33333 1.33331C10.92 1.33331 13.8333 4.24665 13.8333 7.83331C13.8333 11.42 10.92 14.3333 7.33333 14.3333ZM7.33333 2.33331C4.3 2.33331 1.83333 4.79998 1.83333 7.83331C1.83333 10.8666 4.3 13.3333 7.33333 13.3333C10.3667 13.3333 12.8333 10.8666 12.8333 7.83331C12.8333 4.79998 10.3667 2.33331 7.33333 2.33331Z" fill="#374957"/>
+              //                     <path d="M13.44 15.6933C13.3867 15.6933 13.3333 15.6867 13.2867 15.68C12.9733 15.64 12.4067 15.4267 12.0867 14.4733C11.92 13.9733 11.98 13.4733 12.2533 13.0933C12.5267 12.7133 12.9867 12.5 13.5133 12.5C14.1933 12.5 14.7267 12.76 14.9667 13.22C15.2067 13.68 15.14 14.2667 14.76 14.8333C14.2867 15.5467 13.7733 15.6933 13.44 15.6933ZM13.04 14.16C13.1533 14.5067 13.3133 14.68 13.42 14.6933C13.5267 14.7067 13.7267 14.58 13.9333 14.28C14.1267 13.9933 14.14 13.7867 14.0933 13.6933C14.0467 13.6 13.86 13.5 13.5133 13.5C13.3067 13.5 13.1533 13.5667 13.0667 13.68C12.9867 13.7933 12.9733 13.9667 13.04 14.16Z" fill="#374957"/>
+              //                   </svg>
+              //                       <input class="search-input-assignee" type="text" placeholder="Search ..." />
+              //                   </div>
+              //                   <div class="assignee-content">
+              //                       <p>Personnes </p>
+              //                       <ul class="profiles">
+              //                       ${users && users.map((user) => {
+              //                     return `<li class="profileList">
+              //                           <img class="avatar-assignee" src="http://localhost:1337${user.avatar.url}" alt="">
+              //                           <p>${user.username}</p>
+              //                       </li>`
+              //                   })
+              //                     }
+              //                       </ul>
+              //                   </div>
+              // `
+              //                   const container = document.createElement('div');
+              //                   container.classList.add('assignee')
+              //                   container.innerHTML = html;
+              //                   const profileList = container.querySelectorAll(".profileList");
+              //                   profileList.forEach((item) => {
+              //                     item.addEventListener("click", async (event) => {
+              //                       const newAssignee = item.textContent.trim();
+              //                       console.log(newAssignee);
+              //                       // const change = await changeTask(taskId, null, null, newAssignee)
+              //                       // const tasks = await getTasks(selectedProjectId);
+              //                       // renderTasks(tasks);
+              //                     });
+              //                   });
+              //                   const list = e.nextElementSibling;
+              //                   list.appendChild(container);
+              //                 });
+              //               });
+
+              //               document.addEventListener('click', (event) => {
+              //                 const isClickInsideList = event.target.closest('.assignee');
+              //                 const isClickInside = event.target.closest('.profileList');
+
+              //                 if (!isClickInsideList && !isClickInside) {
+              //                   const allLists = document.querySelectorAll('.assignee');
+              //                   allLists.forEach((list) => {
+              //                     list.style.display = 'none';
+              //                   });
+              //                 }
+              //               });
+
             });
           });
         });

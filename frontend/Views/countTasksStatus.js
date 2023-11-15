@@ -1,6 +1,6 @@
 
-export const countTasksStatus = (tasks, taskNumber) => {
-    taskNumber = {
+export const countTasksStatus = (tasks) => {
+    let taskNumber = {
         newRequest: 0,
         inProgress: 0,
         toBeTested: 0,

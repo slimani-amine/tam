@@ -94,7 +94,7 @@ export const taskDetail = async (id, projectId) => {
                             </svg>
                         </div>
                     </div>
-                    <div class="task-details-content-title">
+                    <div class="task-details-content-title" contenteditable="true">
                         ${taskData.title}
                     </div>
                     <div class="task-details-content-description">
@@ -124,7 +124,7 @@ export const taskDetail = async (id, projectId) => {
                                 stroke="#ABB2C8" stroke-width="1.47449" stroke-linecap="round"
                                 stroke-linejoin="round" />
                         </svg>
-                        <p>
+                        <p contenteditable="true" class="p-desc-detail">
                         ${taskData.description}
                         </p>
                     </div>
