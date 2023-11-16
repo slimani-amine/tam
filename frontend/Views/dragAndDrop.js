@@ -54,7 +54,7 @@ export const dragAndDrop = async (draggables, draggables2, droppables, droppable
         status = "completed"
       }
 
-      status && taskId && await changeTask(taskId, status)
+      status && taskId && await changeTask(taskId, null,null,status, null, null)
       const bottomTask = insertAboveTask(zone, e.clientY);
       const curTask = document.querySelector(".is-dragging");
 
@@ -69,7 +69,6 @@ export const dragAndDrop = async (draggables, draggables2, droppables, droppable
     zone.addEventListener("dragover", async (e) => {
       e.preventDefault();
       const selected = e.target.closest(".list").getAttribute("id")
-
       let status = ""
       if (selected === "list1") {
         status = "new request"
@@ -89,11 +88,12 @@ export const dragAndDrop = async (draggables, draggables2, droppables, droppable
         zone.insertBefore(curTask, bottomTask);
       }
 
-      if (status !== "" && taskId !== 0 ) {
-        const changed = await changeTask(taskId, status)
+      if (status !== "" && taskId !== 0 ) {   
+        const changed = await changeTask(taskId, null,null,status, null, null)
         if (changed) {
           const tasks = await getTasks(id)
           if (tasks) {
+
             const taskNumbers = countTasksStatus(tasks)
             const newRequestNumber = document.querySelector("#new-requestNumber")
             const inprogressNumber = document.querySelector("#in-progressNumber")

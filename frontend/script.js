@@ -136,12 +136,13 @@ if (!token) {
               if (i === 1) {
                 lists.style.display = "block";
               }
-
             }
+
             // project name
             const selectedProject = await getProject(selectedProjectId)
             const projectName = document.querySelector('.projectName')
             projectName.innerHTML = selectedProject.Name
+
             //numbers of tasks :
             const taskNumbers = await countTasksStatus(tasks)
             const newRequestNumber = document.querySelector("#new-requestNumber")
@@ -153,9 +154,6 @@ if (!token) {
             tobetestedNumber.innerHTML = taskNumbers.toBeTested
             completedNumber.innerHTML = taskNumbers.completed
             renderTasks(tasks);
-
-
-
 
             //  task detalis
             const taskTitle = document.querySelectorAll(".task-title");
@@ -170,7 +168,6 @@ if (!token) {
                 taskDetails.appendChild(div);
                 div.innerHTML = html;
 
-
                 // Task details operations 
                 let detailsData = {
                   newTitle: "",
@@ -179,26 +176,16 @@ if (!token) {
                   newFlag: ""
                 }
 
-                // title
-                const title = document.querySelector('.task-details-content-title')
-                title.addEventListener("input", (e) => {
-                  detailsData.newTitle = e.target.value;
-                })
-
-                // description
-                const description = document.querySelector('.p-desc-detail')
-                description.addEventListener("input", (e) => {
-                  detailsData.newDesc = e.target.value;
-                })
 
                 // status
                 const taskDetailsStatus = document.querySelector(".dropdown-trigger");
+
                 taskDetailsStatus && taskDetailsStatus.addEventListener('click', () => {
                   let hrml = `<ul class="status-list">
               <li class="statusLi" >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
-  <circle cx="6" cy="6.5" r="6" fill="#C5C5C5"/>
-</svg>
+                <circle cx="6" cy="6.5" r="6" fill="#C5C5C5"/>
+              </svg>
               new request
               </li>
               <li class="statusLi" >
@@ -220,7 +207,6 @@ if (!token) {
               completed
               </li>
               </ul>`
-
                   const container = document.createElement('div');
                   container.innerHTML = hrml;
 
@@ -228,12 +214,8 @@ if (!token) {
                   statusLi.forEach((item) => {
                     item.addEventListener("click", async (event) => {
                       detailsData.newStatus = item.textContent.trim();
-
-
                       let lastStatus = item.parentElement.parentElement.parentElement.parentElement
-
                       lastStatus.children[1].innerHTML = detailsData.newStatus
-
                       let colorClass = ""
                       if (detailsData.newStatus === 'new request') {
                         colorClass = 'gray'
@@ -366,15 +348,22 @@ low
                 commentBtn && commentBtn.addEventListener('click', async (e) => {
                   try {
                     e.preventDefault()
-                    const newComment = await changeTask(taskId, null, null, comment.value)
+                    const newComment = await changeTask(taskId, null, null, null, null, comment.value)
                   } catch (error) {
                     console.log(error, "something wrong !");
                   }
                 })
 
+
+
                 //close 
                 const closeTaskDetails = document.querySelector(".closeTask-details");
                 closeTaskDetails.addEventListener("click", async () => {
+                  // title
+                  detailsData.newTitle = document.querySelector('.task-details-content-title').innerHTML
+                  // description
+                  detailsData.newDesc = document.querySelector('.p-desc-detail').innerHTML
+                  console.log(detailsData, "detailsData");
                   const change = await changeTask(taskId, detailsData.newTitle, detailsData.newDesc, detailsData.newStatus, detailsData.newFlag, detailsData.newComment)
                   const tasks = await getTasks(selectedProjectId);
                   const taskNumbers = await countTasksStatus(tasks)
@@ -389,10 +378,6 @@ low
                   renderTasks(tasks)
                   taskDetails.style.display = "none";
                 });
-
-
-
-
               });
 
               //drag and drop
@@ -433,7 +418,7 @@ low
                   deleteButton.addEventListener("click", async (event) => {
                     const deleteTaskRes = await deleteTask(taskId)
                     const tasks = await getTasks(selectedProjectId);
-                    const taskNumbers = await countTasksStatus(tasks, taskNumber)
+                    const taskNumbers = countTasksStatus(tasks)
                     const newRequestNumber = document.querySelector("#new-requestNumber")
                     const inprogressNumber = document.querySelector("#in-progressNumber")
                     const tobetestedNumber = document.querySelector("#to-be-testedNumber")
@@ -518,7 +503,7 @@ low
                   listItems.forEach((item) => {
                     item.addEventListener("click", async (event) => {
                       const newFlag = item.textContent.trim();
-                      const change = await changeTask(taskId, null, newFlag)
+                      const change = await changeTask(taskId, null, null, null, newFlag, null)
                       const tasks = await getTasks(selectedProjectId);
                       renderTasks(tasks);
                     });
@@ -786,7 +771,7 @@ low
       const tasks = await getTasks(selectedProjectId);
       renderTasks(tasks);
       addTask.style.display = "none";
-      const taskNumbers = await countTasksStatus(tasks, taskNumber)
+      const taskNumbers = countTasksStatus(tasks)
       const newRequestNumber = document.querySelector("#new-requestNumber")
       const inprogressNumber = document.querySelector("#in-progressNumber")
       const tobetestedNumber = document.querySelector("#to-be-testedNumber")
