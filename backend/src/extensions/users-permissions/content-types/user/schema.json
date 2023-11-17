@@ -70,15 +70,17 @@
     },
     "projects": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::project.project"
+      "relation": "manyToMany",
+      "target": "api::project.project",
+      "inversedBy": "users"
     },
     "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     }
   }
 }

@@ -23,6 +23,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::task.task"
+    },
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "projects"
     }
   }
 }

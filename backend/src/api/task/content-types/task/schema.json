@@ -63,6 +63,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "plugin::users-permissions.user"
+    },
+    "deadline": {
+      "type": "date"
     }
   }
 }

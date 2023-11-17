@@ -1,10 +1,10 @@
 import { getTask, getUser } from "../model.js";
 import { translateDate } from "./translateDate.js"
+
 const clearElement = (element) => {
   element.innerHTML = "";
 };
-
-const createTaskHtml = (task, flagClass, users) => {
+const createTaskHtml = (task, flagClass) => {
   return `
   <div class="task-content">
     <svg
@@ -83,10 +83,13 @@ const createTaskHtml = (task, flagClass, users) => {
     <p class="task-title">${task.attributes.title}</p>
   </div>
   <div class="task-detail">
- <svg class="assignee-vide" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 18 18" fill="none">
+
+
+    <svg class="assignee-vide" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 18 18" fill="none">
     <circle cx="9.25" cy="4.95837" r="3.75" stroke="#AFAFAF" stroke-linecap="round"/>
     <path d="M1.86565 14.1261C2.53542 11.758 4.97413 10.625 7.43509 10.625H11.0649C13.5259 10.625 15.9646 11.758 16.6343 14.1261C16.7964 14.6992 16.9255 15.3281 16.9921 16.0014C17.0465 16.551 16.5939 17 16.0417 17H2.45833C1.90604 17 1.45351 16.551 1.50789 16.0014C1.57452 15.3281 1.70355 14.6992 1.86565 14.1261Z" stroke="#AFAFAF" stroke-linecap="round"/>
   </svg>
+ 
     
   
 <div class="assignee-list-render">
@@ -134,10 +137,8 @@ const createTaskHtml = (task, flagClass, users) => {
 
   `;
 };
-
 const createBoardHtml = (task, flagClass) => {
   return `
-  <p>Page 1 > Page 2</p>
     <div style="
         display: flex;
         align-items: center;
@@ -250,22 +251,31 @@ const renderTasks = (tasks) => {
     } else if (task.attributes.flag === 'low') {
       flagClass = 'priority-flag-gray';
     }
-
     // const assignee = await getTask(task.id)
-    // const assigneeData=assignee.users_permissions_users.data
-    // console.log(assigneeData);
-    // const getUsers = ()=>{
+    // const assigneeData = assignee.users_permissions_users.data
+    // const getUsers = async () => {
     //   if (assigneeData) {
-    //     let users=[]
-    //     assigneeData.map(async (e)=>{
-    //       const user= await getUser(e.id)
-    //       users.push(user)
-    //     })
-    //     return users
+    //     let users = [];
+    //     await Promise.all(
+    //       assigneeData.map(async (e) => {
+    //         const user = await getUser(e.id);
+    //         users.push(user);
+    //       })
+    //     );
+    //     return users;
     //   }
+    // };
+
+    // async function fetchUsers() {
+    //   let users = await getUsers();
+    //   console.log(users);
+    //   return users
     // }
-    // let users=getUsers()
-    // console.log(users,"user");
+
+    // let users = await fetchUsers();
+
+    // console.log(users, "user");
+
     const listHtml = createTaskHtml(task, flagClass);
     const boardHtml = createBoardHtml(task, flagClass);
 
@@ -310,4 +320,17 @@ const renderTasks = (tasks) => {
 };
 
 
-export default renderTasks; 
+export default renderTasks;
+
+// ${users ?
+//   users.map((user) => {
+//     return `
+//     <img class="avatar-assignee" src="http://localhost:1337${user.avatar.url}" alt="">
+// `
+//   })
+//   : `<svg class="assignee-vide" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 18 18" fill="none">
+// <circle cx="9.25" cy="4.95837" r="3.75" stroke="#AFAFAF" stroke-linecap="round"/>
+// <path d="M1.86565 14.1261C2.53542 11.758 4.97413 10.625 7.43509 10.625H11.0649C13.5259 10.625 15.9646 11.758 16.6343 14.1261C16.7964 14.6992 16.9255 15.3281 16.9921 16.0014C17.0465 16.551 16.5939 17 16.0417 17H2.45833C1.90604 17 1.45351 16.551 1.50789 16.0014C1.57452 15.3281 1.70355 14.6992 1.86565 14.1261Z" stroke="#AFAFAF" stroke-linecap="round"/>
+// </svg>`
+
+// }

@@ -411,6 +411,11 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'oneToMany',
       'api::task.task'
     >;
+    users: Attribute.Relation<
+      'api::project.project',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -461,6 +466,7 @@ export interface ApiTaskTask extends Schema.CollectionType {
       'oneToMany',
       'plugin::users-permissions.user'
     >;
+    deadline: Attribute.Date;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -727,7 +733,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     phoneNumber: Attribute.BigInteger;
     projects: Attribute.Relation<
       'plugin::users-permissions.user',
-      'oneToMany',
+      'manyToMany',
       'api::project.project'
     >;
     avatar: Attribute.Media;

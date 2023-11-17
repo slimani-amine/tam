@@ -1,8 +1,12 @@
 import * as model from "./model.js";
+import { loader } from "../Views/loader.js";
 const token = localStorage.getItem("token");
 if (token) {
   window.location.assign("index.html");
 } else {
+  setTimeout(() => {
+    document.innerHTML = loader()
+  }, 1000)
   const username = document.querySelector("#fullname");
   const email = document.querySelector("#Email");
   const password = document.querySelector("#password");

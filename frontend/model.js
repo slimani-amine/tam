@@ -1,5 +1,5 @@
 const userId = localStorage.getItem("userId");
-export const getUsers = async (Id) => {
+export const getUsers = async () => {
   try {
     const res = await fetch(
       `http://localhost:1337/api/users?populate=*`,
@@ -87,6 +87,93 @@ export const getProject = async (Id) => {
     console.log(error);
   }
 };
+const submitNewProject = async function (newProjectData) {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:1337/api/projects`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ data: newProjectData }),
+    });
+    const { data } = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+export const pushNewProject = async function (newProjectData) {
+  try {
+    const jwtToken = localStorage.getItem("token");
+
+    const newProject = await submitNewProject(newProjectData, userId);
+
+    const lastProjects = await getProjects(userId);
+
+    const updatedProjects = lastProjects.concat({
+      id: newProject.id,
+      Name: newProject.attributes.Name,
+      createdAt: newProject.attributes.createdAt,
+      publishedAt: newProject.attributes.publishedAt,
+      updatedAt: newProject.attributes.updatedAt,
+      url: newProject.attributes.url
+    });
+
+    const res = await fetch(`http://localhost:1337/api/users/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({
+        projects: updatedProjects,
+      }),
+    });
+
+    const { data } = await res.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const changeProject = async (projectId, idOfNewAssigne) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const newAssignee = await getUser(idOfNewAssigne)
+    const newAssignees={id:newAssignee.id,attributes:newAssignee}
+    const lastProject = await getProject(projectId);
+    console.log(lastProject.users, "last");
+    let updatedProject = undefined
+    if (lastProject) {
+      updatedProject = {
+        id: projectId,
+        Name: lastProject.Name,
+        url: lastProject.url,
+        createdAt: lastProject.createdAt,
+        publishedAt: lastProject.publishedAt,
+        updatedAt: lastProject.updatedAt,
+        users: lastProject.users.data.concat(newAssignees)
+      };
+    }
+    console.log(updatedProject, "upp");
+    const res = await fetch(`http://localhost:1337/api/projects/${ProjectId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({
+        data: updatedProject
+      }),
+    });
+    const data = await res.json()
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 export const getTasks = async (projectId) => {
   try {
     const res = await fetch(
@@ -131,20 +218,21 @@ export const getTask = async (Id) => {
     console.log(error);
   }
 };
-export const changeTask = async (taskId, newTitle,newDesc,newStatus, newFlag, newCommenct) => {
+export const changeTask = async (taskId, newTitle, newDesc, newStatus, newFlag, newCommenct, newDeadline) => {
   try {
     const jwtToken = localStorage.getItem("token");
     let updatedComment = ""
     if (newCommenct) {
       updatedComment = await pushNewComment(taskId, newCommenct)
+      console.log(updatedComment, "updatedComment");
     }
     const lastTask = await getTask(taskId);
-    console.log(lastTask,"last");
+    console.log(lastTask, "last");
     let updatedTask = undefined
     if (lastTask) {
       updatedTask = {
         id: taskId,
-        title: newTitle ? newTitle :lastTask.title,
+        title: newTitle ? newTitle : lastTask.title,
         flag: newFlag ? newFlag : lastTask.flag,
         createdAt: lastTask.createdAt,
         publishedAt: lastTask.publishedAt,
@@ -152,10 +240,11 @@ export const changeTask = async (taskId, newTitle,newDesc,newStatus, newFlag, ne
         description: newDesc ? newDesc : lastTask.description,
         priority: lastTask.priority,
         status: newStatus ? newStatus : lastTask.status,
+        deadline: newDeadline ? newDeadline : lastTask.deadline,
         comments: { data: updatedComment ? updatedComment : lastTask.comments.data }
       };
     }
-
+    console.log(updatedTask, "upp");
     const res = await fetch(`http://localhost:1337/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
@@ -210,96 +299,6 @@ export const getComments = async (taskId) => {
     console.log(error);
   }
 };
-const addComment = async (newComment) => {
-  try {
-    const jwtToken = localStorage.getItem("token");
-
-    const res = await fetch(`http://localhost:1337/api/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify({ data: { description: newComment } })
-    });
-    const data = await res.json()
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-}
-export const pushNewComment = async (taskId, newCommentData) => {
-  try {
-    const jwtToken = localStorage.getItem("token");
-    const newComment = await addComment(newCommentData);
-
-    const lastComments = await getComments(taskId);
-
-    const updatedComment = lastComments.concat(
-      {
-        id: newComment.id,
-        createdAt: newComment.data.attributes.createdAt,
-        publishedAt: newComment.data.attributes.publishedAt,
-        updatedAt: newComment.data.attributes.updatedAt,
-        description: newComment.data.attributes.description,
-      });
-
-    return updatedComment
-  } catch (err) {
-    console.log(err);
-  }
-}
-const submitNewProject = async function (newProjectData) {
-  try {
-    const jwtToken = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:1337/api/projects`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify({ data: newProjectData }),
-    });
-    const { data } = await res.json();
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
-export const pushNewProject = async function (newProjectData) {
-  try {
-    const jwtToken = localStorage.getItem("token");
-
-    const newProject = await submitNewProject(newProjectData, userId);
-
-    const lastProjects = await getProjects(userId);
-
-    const updatedProjects = lastProjects.concat({
-      id: newProject.id,
-      Name: newProject.attributes.Name,
-      createdAt: newProject.attributes.createdAt,
-      publishedAt: newProject.attributes.publishedAt,
-      updatedAt: newProject.attributes.updatedAt,
-      url: newProject.attributes.url
-    });
-
-    const res = await fetch(`http://localhost:1337/api/users/${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify({
-        projects: updatedProjects,
-      }),
-    });
-
-    const { data } = await res.json();
-    return data;
-  } catch (err) {
-    console.error(err);
-  }
-};
 const submitNewTask = async function (newTaskData) {
   try {
     const jwtToken = localStorage.getItem("token");
@@ -351,4 +350,43 @@ export const pushNewTask = async function (newTaskData, projectId = 1) {
   } catch (err) {
     console.log(err);
   }
-};  
+};
+const addComment = async (newComment) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+
+    const res = await fetch(`http://localhost:1337/api/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify({ data: { description: newComment } })
+    });
+    const data = await res.json()
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const pushNewComment = async (taskId, newCommentData) => {
+  try {
+    const jwtToken = localStorage.getItem("token");
+    const newComment = await addComment(newCommentData);
+
+    const lastComments = await getComments(taskId);
+
+    const updatedComment = lastComments.concat(
+      {
+        id: newComment.id,
+        createdAt: newComment.data.attributes.createdAt,
+        publishedAt: newComment.data.attributes.publishedAt,
+        updatedAt: newComment.data.attributes.updatedAt,
+        description: newComment.data.attributes.description,
+      });
+
+    return updatedComment
+  } catch (err) {
+    console.log(err);
+  }
+}

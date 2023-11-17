@@ -1,8 +1,8 @@
 import { getProject, getTask } from "../model.js"
 export const taskDetail = async (id, projectId) => {
     const taskData = await getTask(id)
-
     const projectData = await getProject(projectId)
+
     let flagClass = '';
     if (taskData.flag === 'urgent') {
         flagClass = 'priority-flag-red';
@@ -29,11 +29,12 @@ export const taskDetail = async (id, projectId) => {
     <p>${projectData.Name}</p>
     <div style="display: flex" class="task-details-header-right">
         <p style="color: #949494; font-size: 1rem">Créé le ${taskData.createdAt.substring(0, 10)}</p>
-        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
+        <svg class="otherPoint" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
             <path
                 d="M13.0975 13.2023H13.8964M13.0975 14.0012H13.8964M5.6412 13.2023H6.44009M5.6412 14.0012H6.44009M20.5538 13.2023H21.3527M20.5538 14.0012H21.3527M14.5624 13.6018C14.5624 14.1901 14.0855 14.667 13.4972 14.667C12.9089 14.667 12.432 14.1901 12.432 13.6018C12.432 13.0135 12.9089 12.5366 13.4972 12.5366C14.0855 12.5366 14.5624 13.0135 14.5624 13.6018ZM7.1061 13.6018C7.1061 14.1901 6.6292 14.667 6.04091 14.667C5.45262 14.667 4.97572 14.1901 4.97572 13.6018C4.97572 13.0135 5.45262 12.5366 6.04091 12.5366C6.6292 12.5366 7.1061 13.0135 7.1061 13.6018ZM22.0187 13.6018C22.0187 14.1901 21.5418 14.667 20.9536 14.667C20.3653 14.667 19.8884 14.1901 19.8884 13.6018C19.8884 13.0135 20.3653 12.5366 20.9536 12.5366C21.5418 12.5366 22.0187 13.0135 22.0187 13.6018Z"
                 stroke="#374957" stroke-width="2.13038" stroke-linecap="round" />
         </svg>
+        <div class="otherParams" ></div>
         <svg class="closeTask-details" xmlns="http://www.w3.org/2000/svg" width="21" height="22" viewBox="0 0 21 22"
             fill="none">
             <g clip-path="url(#clip0_2_4937)">
@@ -66,8 +67,8 @@ export const taskDetail = async (id, projectId) => {
                 </svg>
                 <div class="status-lists"></div>
             </div>
-
-            <img src="public/icons/Avatar group (1).png" alt="" />
+    
+        <img src="public/icons/Avatar group (1).png" alt="" />
             <div class="assignee-lists">
 
             </div>
@@ -84,7 +85,7 @@ export const taskDetail = async (id, projectId) => {
             </div>
             <div class="flags-list"></div>
             <div class="time">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <svg class="addTime" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
                         d="M11.8468 22.2778C6.93883 22.2778 2.94876 18.2877 2.94876 13.3797C2.94876 8.47176 6.93883 4.48169 11.8468 4.48169C16.7548 4.48169 20.7448 8.47176 20.7448 13.3797C20.7448 18.2877 16.7548 22.2778 11.8468 22.2778ZM11.8468 5.88664C7.71624 5.88664 4.35371 9.24916 4.35371 13.3797C4.35371 17.5103 7.71624 20.8728 11.8468 20.8728C15.9774 20.8728 19.3399 17.5103 19.3399 13.3797C19.3399 9.24916 15.9774 5.88664 11.8468 5.88664Z"
                         fill="#374957" />
@@ -110,9 +111,10 @@ export const taskDetail = async (id, projectId) => {
                             V24h16V40z" />
                         </g>
                     </svg>
-                    <p>00:00:00</p>
+                    <p class="deadline">${taskData.deadline ? taskData.deadline :  `00:00:00`}</p>
                 </div>
             </div>
+            <div class="date-list"></div>
         </div>
         <div class="task-details-content-title" contenteditable="true">
             ${taskData.title}
@@ -312,11 +314,9 @@ export const taskDetail = async (id, projectId) => {
                     fill="#FFA948" />
             </svg> comments :<br />
             ${taskData.comments.data && taskData.comments.data.map((e) => {
-            return `${e.attributes.description} <br /> `
-            })
-
-            }
-
+        return `${e.attributes.description} <br /> `
+    })
+        }
         </div>
         <div class="task-details-activity-bottom">
             <input type="text" placeholder="Comment" class="comment-input" />
@@ -326,3 +326,17 @@ export const taskDetail = async (id, projectId) => {
 </div>
     `
 }
+
+
+
+// ${users ?
+//     users.map((user) => {
+//         return `<li class="profileList">
+//         <img class="avatar-assignee" src="http://localhost:1337${user.avatar.url}" alt="">
+//         <p>${user.username}</p>
+//     </li>`
+//     })
+
+//     : `<img src="public/icons/Avatar group (1).png" alt="" />`
+
+// }
