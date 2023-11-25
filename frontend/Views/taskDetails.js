@@ -1,8 +1,8 @@
-import { getProject, getTask } from "../model.js"
+import { getProject, getTask, getTasks, getUser } from "../model.js"
 export const taskDetail = async (id, projectId) => {
     const taskData = await getTask(id)
     const projectData = await getProject(projectId)
-
+    console.log(taskData.tags, "tags");
     let flagClass = '';
     if (taskData.flag === 'urgent') {
         flagClass = 'priority-flag-red';
@@ -23,6 +23,16 @@ export const taskDetail = async (id, projectId) => {
     } else if (taskData.status === 'completed') {
         colorClass = 'green'
     }
+    const tasks = await getTasks(projectId)
+    let taskAss = []
+    tasks && tasks.map(async (e) => {
+        let task = await getTask(e.id)
+        task.users_assignees.data.map(async (e) => {
+            let user = await getUser(e.id)
+            taskAss.push(user)
+        })
+    })
+
 
     return `
     <div class="task-details-header">
@@ -68,13 +78,28 @@ export const taskDetail = async (id, projectId) => {
                 <div class="status-lists"></div>
             </div>
     
-        <img src="public/icons/Avatar group (1).png" alt="" />
-            <div class="assignee-lists">
+            
 
+
+            <div class="avatars-assignee assigneeTask-details">
+                ${taskAss.length > 0 ? taskAss && taskAss.map((user) => {
+        return `<img class="avatar-assignee assignee-vide"
+                    src="${user.avatar ? `http://localhost:1337${user.avatar.url}` : user.image}" alt="">
+                `;
+    }) :
+            `<svg class="assignee-vide" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 18 18" fill="none">
+                    <circle cx="9.25" cy="5.45837" r="3.75" stroke="#AFAFAF" stroke-linecap="round" />
+                    <path
+                        d="M1.86565 14.6261C2.53542 12.258 4.97413 11.125 7.43509 11.125H11.0649C13.5259 11.125 15.9646 12.258 16.6343 14.6261C16.7964 15.1992 16.9255 15.8281 16.9921 16.5014C17.0465 17.051 16.5939 17.5 16.0417 17.5H2.45833C1.90604 17.5 1.45351 17.051 1.50789 16.5014C1.57452 15.8281 1.70355 15.1992 1.86565 14.6261Z"
+                        stroke="#AFAFAF" stroke-linecap="round" />
+                </svg>`
+        }
+                <div class="assignee-lists"></div>
             </div>
-
+            
             <div class="task-details-content-header-priorityflag ">
-                <svg class="priority-flag ${flagClass}" style="width: 17" height="19"
+                <svg class="priority-flag-details ${flagClass}" style="width: 17" height="19"
                     xmlns="http://www.w3.org/2000/svg" width="17" height="18" viewBox="0 0 17 18" fill="none">
                     <path
                         d="M1.25 11.4286V1C1.25 0.764298 1.25 0.646447 1.32322 0.573223C1.39645 0.5 1.5143 0.5 1.75 0.5H13.9849C14.5199 0.5 14.7874 0.5 14.8499 0.658113C14.9124 0.816226 14.7172 0.99912 14.3267 1.36491L9.72831 5.67236C9.58225 5.80918 9.50922 5.87759 9.50922 5.96429C9.50922 6.05098 9.58225 6.11939 9.72831 6.25621L14.3267 10.5637C14.7172 10.9295 14.9124 11.1123 14.8499 11.2705C14.7874 11.4286 14.5199 11.4286 13.9849 11.4286H1.25ZM1.25 11.4286V17.5"
@@ -83,7 +108,7 @@ export const taskDetail = async (id, projectId) => {
 
                 <p>${taskData.flag}</p>
             </div>
-            <div class="flags-list"></div>
+            <div class="flags-list-details"></div>
             <div class="time">
                 <svg class="addTime" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
@@ -111,7 +136,7 @@ export const taskDetail = async (id, projectId) => {
                             V24h16V40z" />
                         </g>
                     </svg>
-                    <p class="deadline">${taskData.deadline ? taskData.deadline :  `00:00:00`}</p>
+                    <p class="deadline">${taskData.deadline ? taskData.deadline : `00:00:00`}</p>
                 </div>
             </div>
             <div class="date-list"></div>
@@ -144,23 +169,33 @@ export const taskDetail = async (id, projectId) => {
                 ${taskData.description}
             </p>
         </div>
+        <div style="display:flex ;    align-items: center; gap:10px">
         <div class="task-details-content-tags">
-            <div class="task-details-content-tag green">
-                <p>Social Media</p>
+            ${taskData.tags.data && taskData.tags.data.map((tag) => {
+            return `<div class="task-details-content-tag ${tag.attributes.color}">
+                <p>${tag.attributes.tag}</p>
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path
                         d="M8.46098 3.37077C8.37503 3.28484 8.25847 3.23657 8.13693 3.23657C8.0154 3.23657 7.89884 3.28484 7.81289 3.37077L5.71098 5.47268L3.60906 3.37077C3.52311 3.28484 3.40655 3.23657 3.28502 3.23657C3.16348 3.23657 3.04693 3.28484 2.96098 3.37077C2.87505 3.45672 2.82678 3.57327 2.82678 3.69481C2.82678 3.81634 2.87505 3.9329 2.96098 4.01885L5.06289 6.12077L2.96098 8.22268C2.87505 8.30863 2.82678 8.42519 2.82678 8.54672C2.82678 8.66826 2.87505 8.78482 2.96098 8.87077C3.04693 8.95669 3.16348 9.00496 3.28502 9.00496C3.40655 9.00496 3.52311 8.95669 3.60906 8.87077L5.71098 6.76885L7.81289 8.87077C7.89884 8.95669 8.0154 9.00496 8.13693 9.00496C8.25847 9.00496 8.37503 8.95669 8.46098 8.87077C8.5469 8.78482 8.59517 8.66826 8.59517 8.54672C8.59517 8.42519 8.5469 8.30863 8.46098 8.22268L6.35906 6.12077L8.46098 4.01885C8.5469 3.9329 8.59517 3.81634 8.59517 3.69481C8.59517 3.57327 8.5469 3.45672 8.46098 3.37077Z"
                         fill="#F51F45" />
                 </svg>
-            </div>
-            <div class="task-details-content-tag blue">
-                <p>Design</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path
-                        d="M8.46098 3.37077C8.37503 3.28484 8.25847 3.23657 8.13693 3.23657C8.0154 3.23657 7.89884 3.28484 7.81289 3.37077L5.71098 5.47268L3.60906 3.37077C3.52311 3.28484 3.40655 3.23657 3.28502 3.23657C3.16348 3.23657 3.04693 3.28484 2.96098 3.37077C2.87505 3.45672 2.82678 3.57327 2.82678 3.69481C2.82678 3.81634 2.87505 3.9329 2.96098 4.01885L5.06289 6.12077L2.96098 8.22268C2.87505 8.30863 2.82678 8.42519 2.82678 8.54672C2.82678 8.66826 2.87505 8.78482 2.96098 8.87077C3.04693 8.95669 3.16348 9.00496 3.28502 9.00496C3.40655 9.00496 3.52311 8.95669 3.60906 8.87077L5.71098 6.76885L7.81289 8.87077C7.89884 8.95669 8.0154 9.00496 8.13693 9.00496C8.25847 9.00496 8.37503 8.95669 8.46098 8.87077C8.5469 8.78482 8.59517 8.66826 8.59517 8.54672C8.59517 8.42519 8.5469 8.30863 8.46098 8.22268L6.35906 6.12077L8.46098 4.01885C8.5469 3.9329 8.59517 3.81634 8.59517 3.69481C8.59517 3.57327 8.5469 3.45672 8.46098 3.37077Z"
-                        fill="#F51F45" />
-                </svg>
-            </div>
+            </div>`
+        })}
+        <div class="tags-lists">
+        </div>
+         
+        </div>
+        <svg class="choose-tags" style="margin-top:2%" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <g clip-path="url(#clip0_2_3124)">
+            <path d="M11.9333 2.65711L7.28358 0.073524C7.19687 0.0253056 7.0993 0 7.00008 0C6.90087 0 6.80329 0.0253056 6.71658 0.073524L2.06683 2.65711C1.79407 2.80865 1.56678 3.03037 1.40853 3.2993C1.25027 3.56822 1.16679 3.87457 1.16675 4.18661V11.0834C1.16767 11.8566 1.47526 12.598 2.02204 13.1447C2.56882 13.6915 3.31015 13.9991 4.08341 14H9.91675C10.69 13.9991 11.4313 13.6915 11.9781 13.1447C12.5249 12.598 12.8325 11.8566 12.8334 11.0834V4.18661C12.8334 3.87457 12.7499 3.56822 12.5916 3.2993C12.4334 3.03037 12.2061 2.80865 11.9333 2.65711ZM11.6667 11.0834C11.6667 11.5475 11.4824 11.9926 11.1542 12.3208C10.826 12.649 10.3809 12.8334 9.91675 12.8334H4.08341C3.61929 12.8334 3.17417 12.649 2.84598 12.3208C2.51779 11.9926 2.33341 11.5475 2.33341 11.0834V4.18661C2.33316 4.08226 2.36089 3.97975 2.41373 3.88977C2.46657 3.79979 2.54258 3.72563 2.63383 3.67502L7.00008 1.25069L11.3669 3.67502C11.4581 3.72571 11.5339 3.7999 11.5867 3.88988C11.6394 3.97985 11.6671 4.08232 11.6667 4.18661V11.0834Z" fill="#666666"/>
+            <path d="M7 4.9585C7.48325 4.9585 7.875 4.56675 7.875 4.0835C7.875 3.60025 7.48325 3.2085 7 3.2085C6.51675 3.2085 6.125 3.60025 6.125 4.0835C6.125 4.56675 6.51675 4.9585 7 4.9585Z" fill="#666666"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_2_3124">
+                <rect width="14" height="14" fill="white"/>
+            </clipPath>
+            </defs>
+        </svg>  
         </div>
         <div class="substaks">
             <div class="substaks-navBar">
@@ -312,11 +347,14 @@ export const taskDetail = async (id, projectId) => {
                 <path
                     d="M0.585429 7.78248V1.28413C0.584757 1.16857 0.618512 1.05544 0.682391 0.959143C0.74627 0.862849 0.837378 0.787759 0.9441 0.743448C1.05082 0.699136 1.16832 0.687611 1.28162 0.71034C1.39492 0.73307 1.49888 0.789025 1.58025 0.871071L4.82653 4.12316C4.93488 4.23216 4.9957 4.37961 4.9957 4.5333C4.9957 4.687 4.93488 4.83445 4.82653 4.94345L1.58025 8.19553C1.49888 8.27758 1.39492 8.33353 1.28162 8.35626C1.16832 8.37899 1.05082 8.36747 0.9441 8.32316C0.837378 8.27884 0.74627 8.20376 0.682391 8.10746C0.618512 8.01117 0.584757 7.89803 0.585429 7.78248Z"
                     fill="#FFA948" />
-            </svg> comments :<br />
-            ${taskData.comments.data && taskData.comments.data.map((e) => {
-        return `${e.attributes.description} <br /> `
-    })
+            </svg> 
+            
+            <div class="comments">comments :<br />
+            ${taskData.comment.data && taskData.comment.data.map((e) => {
+            return `<p id=${e.id}>${e.attributes.description}</p> `
+        })
         }
+            </div>
         </div>
         <div class="task-details-activity-bottom">
             <input type="text" placeholder="Comment" class="comment-input" />
@@ -327,8 +365,6 @@ export const taskDetail = async (id, projectId) => {
     `
 }
 
-
-
 // ${users ?
 //     users.map((user) => {
 //         return `<li class="profileList">
@@ -336,7 +372,5 @@ export const taskDetail = async (id, projectId) => {
 //         <p>${user.username}</p>
 //     </li>`
 //     })
-
 //     : `<img src="public/icons/Avatar group (1).png" alt="" />`
-
 // }

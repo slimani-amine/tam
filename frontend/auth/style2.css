@@ -2,12 +2,10 @@
 
 body {
   background-color: rgb(255, 255, 255);
-  background: linear-gradient(
-    146deg,
-    rgb(214, 253, 247) 0%,
-    rgba(255, 255, 255, 1) 40%,
-    #e5d0ff 100%
-  );
+  background: linear-gradient(146deg,
+      rgba(214, 253, 247, 0.771) 0%,
+      rgba(255, 255, 255, 1) 30%,
+      #e5d0ff 100%);
   background-repeat: no-repeat;
   background-size: cover;
   font-family: "Outfit", sans-serif;
@@ -15,10 +13,12 @@ body {
   margin: 0;
   height: 100vh;
 }
+
 .container {
   display: flex;
   justify-content: space-around;
 }
+
 button {
   cursor: pointer;
 }
@@ -31,21 +31,22 @@ button {
   gap: 1rem;
   border-radius: 1.2rem;
   background: #fff;
-  box-shadow: 0px 25px 120px 0px #e9d6ff;
-  margin: 50% 0 0% 15%;
+  box-shadow: 0px 25px 120px 0px #e9d6ff8f;
+  margin: 90% 0 0% 15%;
   width: 32%;
-  padding: 1.5rem;
+  padding: 3rem;
   display: flex;
   align-items: stretch;
-  height: 550px;
+  height: 650px;
 }
 
 .heading {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #2e2e2e;
-  margin-top: 1rem;
   text-align: center;
   font-weight: bold;
+  font-weight: 800;
+  line-height: 200%;
 }
 
 .inputContainer {
@@ -53,7 +54,7 @@ button {
 }
 
 .inputContainer::placeholder {
-  color: #91939a;
+  color: #a8a9aa;
   font-size: 1rem;
   font-style: normal;
   font-weight: 300;
@@ -76,19 +77,21 @@ button {
   text-align: center;
   color: #9747ff;
 }
+
 .group {
   display: flex;
   line-height: 1rem;
   align-items: center;
   position: relative;
 }
+
 .inputField {
   display: flex;
   height: 2.5rem;
   width: 100%;
   text-indent: 2rem;
   border-radius: 10px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #dcdcdcb5;
   padding: 0 1rem;
   outline: none;
   color: #0d0c22;
@@ -98,7 +101,7 @@ button {
 }
 
 .inputField::placeholder {
-  color: #999ba0;
+  color: #91939a97;
   font-size: 1rem;
   font-weight: 300;
 }
@@ -107,6 +110,7 @@ button {
   font-size: 1rem;
   font-weight: bold;
 }
+
 .checkbox {
   margin-top: 2%;
   width: 18px;
@@ -114,15 +118,18 @@ button {
   border: 2px solid #91939a;
   border-radius: 13px;
 }
+
 .remember {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .connected {
   display: flex;
   align-items: center;
 }
+
 .login-button {
   display: flex;
   justify-content: center;
@@ -136,19 +143,23 @@ button {
   border-radius: 10px;
   height: 1rem;
 }
+
 .login-button:hover {
   opacity: 0.8;
 }
+
 .or {
   display: flex;
   justify-content: center;
 }
+
 .line {
   width: 100px;
   height: 40px;
   border-bottom: 1px solid #91939a;
   margin: -3% 3%;
 }
+
 .google {
   display: flex;
   width: 100%;
@@ -174,11 +185,13 @@ button {
   width: 100%;
   height: 1rem;
 }
+
 #google-button:hover {
   background-color: #d5baf9;
   color: #fff;
   opacity: 0.8;
 }
+
 .signupContainer {
   display: flex;
   align-items: center;
@@ -214,6 +227,7 @@ button {
   width: 20%;
   position: relative;
 }
+
 .rect1 {
   position: absolute;
   top: 45%;
@@ -225,6 +239,7 @@ button {
   background: linear-gradient(180deg, #fefbff 0%, #f9ebff 51.04%, #faedff 100%);
   box-shadow: 0px 4px 14px 0px rgba(230, 195, 240, 0.25);
 }
+
 .rect2 {
   position: absolute;
   top: 50%;
@@ -233,51 +248,48 @@ button {
   height: 250px;
   border-radius: 36px;
   border: 2px solid #fbfaff;
-  background: linear-gradient(
-    180deg,
-    #fcf5ff7b 0%,
-    #f9ebff86 6.77%,
-    #faedff82 100%
-  );
+  background: linear-gradient(180deg,
+      #fcf5ff7b 0%,
+      #f9ebff86 6.77%,
+      #faedff82 100%);
   box-shadow: 0px 7px 23px -7px #d39be3;
 }
+
 .rect3 {
   position: absolute;
-  top: 78%;
+  top: 72%;
   left: 40%;
   width: 200px;
   height: 120px;
   border-radius: 1rem;
   border: 1px solid #fbfaff;
-  background: linear-gradient(
-    180deg,
-    rgba(252, 245, 255, 0.6) 0%,
-    rgba(249, 235, 255, 0.6) 6.77%,
-    rgba(250, 237, 255, 0.6) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(252, 245, 255, 0.6) 0%,
+      rgba(249, 235, 255, 0.6) 6.77%,
+      rgba(250, 237, 255, 0.6) 100%);
   box-shadow: 0px 4px 9px 0px rgba(201, 151, 216, 0.25);
   filter: blur(0.5px);
   backdrop-filter: blur(4.5px);
 }
+
 .rect4 {
   position: absolute;
-  top: 90%;
-  left: 35%;
+  top: 82%;
+  left: 32%;
   width: 60px;
   height: 55px;
   border-radius: 10px;
   border: 1px solid #fbfaff;
 
-  background: linear-gradient(
-    180deg,
-    rgba(252, 245, 255, 0.7) 0%,
-    rgba(249, 235, 255, 0.7) 6.77%,
-    rgba(250, 237, 255, 0.7) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(252, 245, 255, 0.7) 0%,
+      rgba(249, 235, 255, 0.7) 6.77%,
+      rgba(250, 237, 255, 0.7) 100%);
 
   box-shadow: 0px 4px 13px 0px rgba(211, 152, 242, 0.36);
   backdrop-filter: blur(7px);
 }
+
 .right-icon {
   position: absolute;
   top: 50%;
@@ -288,18 +300,19 @@ button {
 
 .rect01 {
   position: absolute;
-  top: 54%;
-  left: 15%;
+  top: 53%;
+  left: 14%;
   width: 80px;
   height: 80px;
   border-radius: 39px;
   background: var(--liear, linear-gradient(180deg, #fff 0.2%, #fee5ff 122.2%));
   box-shadow: 0px 14px 15px 0px rgba(206, 170, 234, 0.44);
 }
+
 .rect02 {
   position: absolute;
-  top: 56%;
-  left: 19%;
+  top: 54.5%;
+  left: 18%;
   width: 50px;
   height: 50px;
   border-radius: 39px;
@@ -307,10 +320,11 @@ button {
   background: var(--liear, linear-gradient(180deg, #fff 0.2%, #fee5ff 122.2%));
   box-shadow: 0px 14px 15px 0px rgba(206, 170, 234, 0.44);
 }
+
 .rect11 {
   position: absolute;
-  top: 65%;
-  left: 8%;
+  top: 63%;
+  left: 7%;
   width: 136px;
   height: 90px;
   border-radius: 39px;
@@ -319,10 +333,11 @@ button {
   background: var(--liear, linear-gradient(180deg, #fff 0.2%, #fee5ff 122.2%));
   box-shadow: 0px 14px 15px 0px rgba(206, 170, 234, 0.44);
 }
+
 .rect12 {
   position: absolute;
-  top: 67%;
-  left: 12%;
+  top: 64.5%;
+  left: 11%;
   width: 110px;
   height: 64px;
   border-radius: 39px;
@@ -332,8 +347,9 @@ button {
 
 @media only screen and (max-width: 2200px) {
   .form_main {
-    width: 30%;
-    height: 680px;
-    margin: 3% auto;
+    width: 31%;
+    height: 730px;
+    margin: 6% auto;
+
   }
 }

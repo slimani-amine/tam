@@ -37,6 +37,7 @@ svg:hover {
   align-items: center;
   border-radius: 229.127px;
   border: 1.718px solid #FFF;
+  margin-top: 7rem;
 }
 
 /* Side bar */
@@ -126,10 +127,10 @@ svg:hover {
 .inputIcon {
   position: absolute;
   left: 1;
-  padding-top: 0.6rem;
   min-width: 50px;
   text-align: center;
   color: #9747ff;
+  padding-top: 0.6rem;
 }
 
 .inputField {
@@ -452,6 +453,12 @@ svg:hover {
   fill: green;
 }
 
+.red {
+  background: #ffdada;
+
+  fill: red;
+}
+
 .blue {
   background: #e1f4fd;
 
@@ -526,6 +533,7 @@ svg:hover {
   justify-content: space-between;
   width: 100%;
   height: 25px;
+  position: relative;
 }
 
 .task-content {
@@ -540,6 +548,24 @@ svg:hover {
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  position: absolute;
+  right: 0;
+}
+
+.assignee-details {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 6px;
+  background: #FFF;
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.34);
+  z-index: 1;
+  padding: 7px 4px;
+  width: 227px;
+  top: 150px;
+  left: 250px;
 }
 
 /* boards */
@@ -797,6 +823,7 @@ svg:hover {
   gap: 1rem;
   align-self: stretch;
   margin-top: 1%;
+
 }
 
 .task-details-content-tag {
@@ -1158,8 +1185,17 @@ svg:hover {
   left: -110px
 }
 
+.flags-list-details {
+  position: relative;
+}
+
+.flag-list-details {
+  position: absolute;
+
+}
+
 .options-otherbtn {
-  color: var(--font, #374957);
+  color: #374957;
   font-family: Outfit;
   font-size: 14px;
   font-style: normal;
@@ -1193,8 +1229,9 @@ svg:hover {
 .other-list li:hover {
   background: #FAEEFF;
 }
+
 /* date */
-.date-lists{
+.date-lists {
   position: absolute;
   left: 60%;
   top: 17%;
@@ -1256,11 +1293,23 @@ svg:hover {
 .profiles li {
   display: flex;
   align-items: center;
-  gap: 7px;
+  justify-content: space-between;
+  margin-right: 5%;
 }
 
 .profiles li:hover {
   background: #FAEEFF;
+}
+
+.tag-profiles {
+  margin-left: -15%;
+}
+
+.tag-profiles li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 5%;
 }
 
 .avatar-assignee {
@@ -1349,4 +1398,31 @@ svg:hover {
   background: rgb(237, 76, 148);
   top: 10px;
   left: -6px;
+}
+
+.tag-list {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 6px;
+  background: #FFF;
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.34);
+  z-index: 1;
+  padding: 7px 4px;
+  width: 227px;
+
+}
+
+.choose-tag-p {
+  color: #647380;
+  font-family: Outfit;
+  font-size: .9rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+}
+.avatars-assignee{
+  display: flex;
 }

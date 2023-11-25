@@ -54,18 +54,25 @@
       ],
       "default": "empty"
     },
-    "comments": {
+    "deadline": {
+      "type": "date"
+    },
+    "comment": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::comment.comment"
+      "target": "api::comment.comment",
+      "mappedBy": "task"
     },
-    "users_permissions_users": {
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "mappedBy": "tasks"
+    },
+    "users_assignees": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "plugin::users-permissions.user"
-    },
-    "deadline": {
-      "type": "date"
     }
   }
 }

@@ -29,6 +29,11 @@
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
       "inversedBy": "projects"
+    },
+    "sub_projects": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::sub-project.sub-project"
     }
   }
 }

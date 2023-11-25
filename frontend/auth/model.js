@@ -41,7 +41,7 @@ export const register = async (inputValues) => {
       throw new Error("Failed to register user");
     }
     const data = await res.json();
-    
+
     if (data.jwt) {
       localStorage.setItem("token", data.jwt);
       localStorage.setItem("userId", data.user.id);
