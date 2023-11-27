@@ -32,12 +32,17 @@ if (!token) {
     timeline.style.display = "none";
     noTasks.style.display = "block";
   }
+
+  //---------------------------
   // avatar 
+  //---------------------------
   const userData = await model.getUser(userId)
   const avatar = document.querySelector("#avatar-img")
   userData.avatar ? avatar.setAttribute("src", `http://localhost:1337${userData.avatar.url}`) : avatar.setAttribute("src", `https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png`)
 
+  //---------------------------
   //sidebar 
+  //---------------------------
   withoutSideBar.addEventListener("click", () => {
     sidebar.style.display = "none";
   });
@@ -45,7 +50,9 @@ if (!token) {
     sidebar.style.display = "block";
   });
 
+  //---------------------------
   //nav
+  //---------------------------
   listNavbar.classList.add("navbar-content-a-clicked");
   listNavbarContent.forEach((item) => {
     item.addEventListener("click", () => {
@@ -80,7 +87,9 @@ if (!token) {
     });
   });
 
+  //---------------------------
   // render projects 
+  //---------------------------
   const allProjectContents = document.querySelector("#allProject-contents");
   let i = 0
   const data = await model.getProjects();
@@ -124,7 +133,9 @@ if (!token) {
     allProjectContents.insertAdjacentHTML("beforeend", html);
   })
 
+  //---------------------------
   //render tasks
+  //---------------------------
   const listItems2 = document.querySelectorAll(".list2");
   const dropdown1 = document.querySelectorAll(".dropdown1");
   const dropdown2 = document.querySelectorAll(".dropdown2");
@@ -166,12 +177,16 @@ if (!token) {
         }
       }
 
+      //---------------------------
       // project name
+      //---------------------------
       const selectedProject = await model.getProject(selectedProjectId)
       const projectName = document.querySelector('.projectName')
       projectName.innerHTML = selectedProject.Name
 
+      //---------------------------
       //numbers of tasks :
+      //---------------------------
       const taskNumbers = countTasksStatus(tasks)
       const newRequestNumber = document.querySelector("#new-requestNumber")
       const inprogressNumber = document.querySelector("#in-progressNumber")
@@ -201,7 +216,9 @@ if (!token) {
     });
   });
 
+  //---------------------------
   // tasks nav
+  //---------------------------
   listItems.forEach((item) => {
     item.addEventListener("click", () => {
       columns.style.display = "none";
@@ -231,7 +248,9 @@ if (!token) {
     });
   });
 
+  //---------------------------
   // avatar and logout
+  //---------------------------
   const avatarImg = document.getElementById("avatar-img");
   const avatarDropdown = document.getElementById("avatar-dropdown");
   const logoutButton = document.getElementById("logout-button");
@@ -262,7 +281,9 @@ if (!token) {
     dropdown.style.display = "none";
   }
 
+  //---------------------------
   //add project
+  //---------------------------
   const newProject = document.querySelector(".new-project");
   const addProject = document.querySelector(".addProject");
   const close = document.querySelector(".close");
@@ -284,8 +305,9 @@ if (!token) {
       console.error(error, "something wrong!");
     }
   });
-
+  //---------------------------
   //add task
+  //---------------------------
   const newTask = document.querySelectorAll(".list-button");
   const addTask = document.querySelector(".addTask");
   const closeAddTask = document.querySelector(".closeAddTask");
@@ -457,7 +479,9 @@ if (!token) {
   const droppables2 = document.querySelectorAll(".list");
   dragAndDrop(draggables, draggables2, droppables, droppables2)
 
+  //---------------------------
   // 1) tags
+  //---------------------------
   //choose tags
   document.addEventListener('click', async (event) => {
     const tags = await model.getTags()
@@ -565,7 +589,9 @@ if (!token) {
     }
   })
 
+  //---------------------------
   // 2) assignee tasks
+  //---------------------------
   document.addEventListener('click', async (event) => {
     const clickedAss = event.target.closest('.assignee-vide');
     if (clickedAss) {
@@ -612,17 +638,17 @@ if (!token) {
 
       listItems.forEach((item) => {
         item.addEventListener("click", async (event) => {
-          
+
           const idtask = item.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('data-task-id');
           const newAssignee = item.getAttribute('id')
           const user = await model.getUser(newAssignee)
 
           let taskAss = []
           const tasks = await model.getTasks(selectedProjectId);
-          
+
           tasks && tasks.map(async (e) => {
             let task = await model.getTask(e.id)
-            console.log(task,"task");
+            console.log(task, "task");
             task.users_assignees.data.map(async (e) => {
               let user = await model.getUser(e.id)
               taskAss.push(user)
@@ -649,7 +675,9 @@ if (!token) {
     }
   });
 
+  //---------------------------
   // 3) priority flags
+  //---------------------------
   document.addEventListener('click', async (event) => {
     const clickedFlag = event.target.closest('.priority-flag');
     if (clickedFlag) {
@@ -825,7 +853,9 @@ Delete
     }
   });
 
+  //---------------------------
   // 5) task details
+  //---------------------------
   let idtask = 0
   const taskDetails = document.querySelector(".task-details");
   document.addEventListener('click', async (event) => {
@@ -1046,7 +1076,7 @@ Delete
         item.addEventListener("click", async (event) => {
           detailsData.newFlag = item.textContent.trim();
           let lastFlag = document.querySelector('.task-details-content-header-priorityflag ')
-          console.log(lastFlag,"lastFlag");
+          console.log(lastFlag, "lastFlag");
           lastFlag.children[1].innerHTML = detailsData.newFlag
           let colorClass = ""
           if (detailsData.newFlag === 'urgent') {
